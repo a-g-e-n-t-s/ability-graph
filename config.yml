@@ -1,0 +1,24 @@
+# graph-ability configuration
+# ============================
+#
+# Non-sensitive settings only. Credentials (MEMORY_API_KEY, MEMORY_API_URL)
+# are managed by secret-ability via the `models` vault — never put them here.
+#
+# This file is discovered via walk-up search from CWD.
+# Environment variables override any value (GRAPH_DATABASE, etc.).
+
+graph:
+  database: kadi_memory
+  embedding_model: text-embedding-3-small
+  extraction_model: gpt-5-nano
+  chat_model: gpt-5-mini
+  default_agent: default
+  embedding_transport: api            # 'api' (default) or 'broker'
+  chat_transport: api                 # 'api' (default) or 'broker'
+  # api_url:                          # loaded from vault (MEMORY_API_URL)
+
+arcadedb:
+  host: localhost
+  port: 2480
+  username: root
+  password: playwithdata

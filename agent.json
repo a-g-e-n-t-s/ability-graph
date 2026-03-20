@@ -1,0 +1,63 @@
+{
+  "name": "graph-ability",
+  "version": "0.0.7",
+  "description": "General-purpose graph storage and retrieval engine with N-signal hybrid search, schema registry, batch pipeline, and background processing — deployable as native library or remote broker ability",
+  "type": "ability",
+  "entrypoint": "dist/index.js",
+  "abilities": {
+    "secret-ability": "^0.9.1"
+  },
+  "brokers": {
+    "default": "wss://broker.kadi.build/kadi",
+    "local": "ws://localhost:8080/kadi"
+  },
+  "scripts": {
+    "setup": "npm install && npm run build",
+    "start": "node dist/index.js broker"
+  },
+  "build": {
+    "default": {
+      "image": "graph-ability:1.0.0",
+      "from": "node:22-slim",
+      "platform": "linux/amd64",
+      "cli": "latest",
+      "run": [
+        "npm ci",
+        "npm run build",
+        "kadi install kadi-install",
+        "kadi install kadi-run",
+        "kadi install kadi-secret",
+        "kadi install"
+      ],
+      "cmd": [
+        "sh",
+        "-c",
+        "kadi run start"
+      ]
+    }
+  },
+  "deploy": {
+    "local": {
+      "target": "local",
+      "engine": "docker",
+      "services": {
+        "agent": {
+          "image": "graph-ability:1.0.0",
+          "command": [
+            "sh",
+            "-c",
+            "kadi secret receive --vault models && kadi run start"
+          ]
+        }
+      },
+      "secrets": {
+        "vault": "models",
+        "required": [
+          "MEMORY_API_KEY",
+          "MEMORY_API_URL"
+        ],
+        "delivery": "broker"
+      }
+    }
+  }
+}
