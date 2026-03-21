@@ -95,27 +95,15 @@ export function isRetryableError(error: Error): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Core Retry Function
+// Core Retry Functions
 // ---------------------------------------------------------------------------
 
 /**
- * Invoke a remote tool with configurable retry and exponential backoff.
- *
- * @param abilities - The abilities interface for invoking tools.
- * @param tool      - Tool name (also used for default policy lookup).
- * @param params    - Parameters to pass to the tool.
- * @param policy    - Optional policy overrides (merged with defaults).
- * @returns The result from the tool invocation.
- * @throws The last error if all retries are exhausted or error is non-retryable.
+ * Resolve a retry policy by merging caller overrides -> operation defaults -> fallback defaults.
  */
-export async function invokeWithRetry<T = unknown>(
-  abilities: SignalAbilities,
-  tool: string,
-  params: Record<string, unknown>,
-  policy?: Partial<RetryPolicy>,
-): Promise<T> {
-  const defaultPolicy = DEFAULT_RETRY_POLICIES[tool];
-  const resolved: RetryPolicy = {
+function resolvePolicy(operationName: string, policy?: Partial<RetryPolicy>): RetryPolicy {
+  const defaultPolicy = DEFAULT_RETRY_POLICIES[operationName];
+  return {
     maxRetries: policy?.maxRetries ?? defaultPolicy?.maxRetries ?? 0,
     initialDelayMs: policy?.initialDelayMs ?? defaultPolicy?.initialDelayMs ?? 1000,
     backoffMultiplier: policy?.backoffMultiplier ?? defaultPolicy?.backoffMultiplier ?? 2,
@@ -124,12 +112,21 @@ export async function invokeWithRetry<T = unknown>(
     isRetryable: policy?.isRetryable ?? defaultPolicy?.isRetryable ?? isRetryableError,
     onRetry: policy?.onRetry ?? defaultPolicy?.onRetry,
   };
+}
 
+/**
+ * Execute the retry loop over an arbitrary async function.
+ */
+async function retryLoop<T>(
+  fn: () => Promise<T>,
+  operationName: string,
+  resolved: RetryPolicy,
+): Promise<T> {
   let lastError: Error;
 
   for (let attempt = 0; attempt <= resolved.maxRetries; attempt++) {
     try {
-      return await abilities.invoke<T>(tool, params);
+      return await fn();
     } catch (err: unknown) {
       lastError = err instanceof Error ? err : new Error(String(err));
 
@@ -153,7 +150,7 @@ export async function invokeWithRetry<T = unknown>(
 
       resolved.onRetry?.(attempt + 1, lastError, delay);
       console.warn(
-        `[graph-ability] ${tool} attempt ${attempt + 1} failed: ${lastError.message} — retrying in ${Math.round(delay)}ms`,
+        `[graph-ability] ${operationName} attempt ${attempt + 1} failed: ${lastError.message} — retrying in ${Math.round(delay)}ms`,
       );
 
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -161,4 +158,45 @@ export async function invokeWithRetry<T = unknown>(
   }
 
   throw lastError!;
+}
+
+/**
+ * Invoke a remote tool with configurable retry and exponential backoff.
+ *
+ * @param abilities - The abilities interface for invoking tools.
+ * @param tool      - Tool name (also used for default policy lookup).
+ * @param params    - Parameters to pass to the tool.
+ * @param policy    - Optional policy overrides (merged with defaults).
+ * @returns The result from the tool invocation.
+ * @throws The last error if all retries are exhausted or error is non-retryable.
+ */
+export async function invokeWithRetry<T = unknown>(
+  abilities: SignalAbilities,
+  tool: string,
+  params: Record<string, unknown>,
+  policy?: Partial<RetryPolicy>,
+): Promise<T> {
+  const resolved = resolvePolicy(tool, policy);
+  return retryLoop(() => abilities.invoke<T>(tool, params), tool, resolved);
+}
+
+/**
+ * Execute an arbitrary async function with configurable retry and exponential backoff.
+ *
+ * Uses the same retry infrastructure as {@link invokeWithRetry}, but works with
+ * any async operation (e.g. direct HTTP fetch calls).
+ *
+ * @param fn             - The async function to execute (and retry on failure).
+ * @param operationName  - Used for default policy lookup and log messages.
+ * @param policy         - Optional policy overrides (merged with defaults).
+ * @returns The result from the function.
+ * @throws The last error if all retries are exhausted or error is non-retryable.
+ */
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  operationName: string,
+  policy?: Partial<RetryPolicy>,
+): Promise<T> {
+  const resolved = resolvePolicy(operationName, policy);
+  return retryLoop(fn, operationName, resolved);
 }

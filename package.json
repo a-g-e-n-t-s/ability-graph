@@ -1,6 +1,6 @@
 {
   "name": "ability-graph",
-  "version": "0.0.7",
+  "version": "0.0.12",
   "description": "General-purpose graph storage and retrieval engine with N-signal hybrid search, schema registry, batch pipeline, and background processing",
   "type": "module",
   "main": "dist/index.js",

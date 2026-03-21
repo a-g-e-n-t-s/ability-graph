@@ -54,9 +54,10 @@ export const STOP_WORDS = new Set([
  * If only one term remains, returns just that term (no AND).
  *
  * @param rawQuery - The user's natural language search query.
+ * @param join     - Join operator for multiple terms: 'AND' (strict) or 'OR' (broad). Default: 'OR'.
  * @returns A Lucene-compatible search query string.
  */
-export function buildKeywordQuery(rawQuery: string): string {
+export function buildKeywordQuery(rawQuery: string, join: 'AND' | 'OR' = 'OR'): string {
   if (!rawQuery || !rawQuery.trim()) return '';
 
   const terms = rawQuery
@@ -67,5 +68,5 @@ export function buildKeywordQuery(rawQuery: string): string {
 
   if (terms.length === 0) return escapeSQL(rawQuery); // fallback
   if (terms.length === 1) return escapeSQL(terms[0]);
-  return terms.map((t) => escapeSQL(t)).join(' AND ');
+  return terms.map((t) => escapeSQL(t)).join(` ${join} `);
 }

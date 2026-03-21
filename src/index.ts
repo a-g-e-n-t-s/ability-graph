@@ -11,11 +11,11 @@
  * Credentials are loaded from the "models" vault via secret-ability at startup.
  * No .env files — uses vault → config.yml → built-in defaults.
  *
- * 15 tools registered:
+ * 16 tools registered:
  *   graph-schema-register, graph-schema-list, graph-store, graph-recall,
  *   graph-batch-store, graph-context, graph-relate, graph-delete,
  *   graph-job-status, graph-job-cancel, graph-query, graph-command,
- *   graph-chat, graph-find, graph-count
+ *   graph-chat, graph-find, graph-count, graph-repair-embeddings
  */
 
 import { readFileSync } from 'fs';
@@ -40,6 +40,7 @@ import { registerCommandTool } from './tools/command.js';
 import { registerChatTool } from './tools/chat.js';
 import { registerFindTool } from './tools/find.js';
 import { registerCountTool } from './tools/count.js';
+import { registerRepairEmbeddingsTool } from './tools/repair-embeddings.js';
 
 // ── Read broker config from agent.json ────────────────────────────────
 
@@ -123,8 +124,9 @@ registerCommandTool(client, config);
 registerChatTool(client, config);
 registerFindTool(client, config);
 registerCountTool(client, config);
+registerRepairEmbeddingsTool(client, config);
 
-console.log('[graph-ability] 15 tools registered');
+console.log('[graph-ability] 16 tools registered');
 
 // ── CLI entry point (kadi run / direct execution) ─────────────────────
 //
@@ -169,9 +171,9 @@ export default client;
 // ── Library exports for native consumers ──────────────────────────────
 
 export { SchemaRegistry, schemaRegistry } from './lib/schema-registry.js';
-export { invokeWithRetry, DEFAULT_RETRY_POLICIES, isRetryableError } from './lib/retry.js';
+export { invokeWithRetry, withRetry, DEFAULT_RETRY_POLICIES, isRetryableError } from './lib/retry.js';
 export { reciprocalRankFusion } from './lib/rrf.js';
-export { escapeSQL, sanitizeInt } from './lib/sql.js';
+export { escapeSQL, sanitizeInt, buildFilterConditions } from './lib/sql.js';
 export { embedTexts } from './lib/embedder.js';
 export { chatCompletion } from './lib/chat.js';
 export { extractMetadata } from './lib/extractor.js';

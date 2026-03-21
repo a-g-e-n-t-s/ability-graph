@@ -9,7 +9,7 @@
  * retry with exponential backoff.
  */
 
-import { invokeWithRetry } from './retry.js';
+import { invokeWithRetry, withRetry } from './retry.js';
 import type { SignalAbilities } from './types.js';
 import type { Transport } from './config.js';
 
@@ -152,6 +152,9 @@ async function requestEmbeddingsBroker(
 
 /**
  * Send a batch via direct HTTP to an OpenAI-compatible endpoint.
+ *
+ * Uses {@link withRetry} for automatic retry with exponential backoff on
+ * transient network/server errors (fetch failed, 429, 502, 503, etc.).
  */
 async function requestEmbeddingsHttp(
   texts: string[],
@@ -178,47 +181,49 @@ async function requestEmbeddingsHttp(
     headers['Authorization'] = `Bearer ${config.apiKey}`;
   }
 
-  let httpResponse: Response;
-  try {
-    httpResponse = await fetch(url, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ model, input: texts }),
-    });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    throw new Error(
-      `Embedding HTTP request failed (${batchLabel}, ` +
-      `offset ${context.globalOffset}, ${texts.length} texts, model: ${model}, ` +
-      `url: ${url}): ${message}`,
-    );
-  }
-
-  if (!httpResponse.ok) {
-    let body: string;
+  return withRetry(async () => {
+    let httpResponse: Response;
     try {
-      body = await httpResponse.text();
-    } catch {
-      body = '(could not read response body)';
+      httpResponse = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ model, input: texts }),
+      });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      throw new Error(
+        `Embedding HTTP request failed (${batchLabel}, ` +
+        `offset ${context.globalOffset}, ${texts.length} texts, model: ${model}, ` +
+        `url: ${url}): ${message}`,
+      );
     }
-    throw new Error(
-      `Embedding HTTP ${httpResponse.status} from ${url} (${batchLabel}, ` +
-      `model: ${model}): ${body.slice(0, 500)}`,
-    );
-  }
 
-  let response: EmbeddingApiResponse;
-  try {
-    response = (await httpResponse.json()) as EmbeddingApiResponse;
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    throw new Error(
-      `Embedding response is not valid JSON (${batchLabel}, ` +
-      `model: ${model}, url: ${url}): ${message}`,
-    );
-  }
+    if (!httpResponse.ok) {
+      let body: string;
+      try {
+        body = await httpResponse.text();
+      } catch {
+        body = '(could not read response body)';
+      }
+      throw new Error(
+        `Embedding HTTP ${httpResponse.status} from ${url} (${batchLabel}, ` +
+        `model: ${model}): ${body.slice(0, 500)}`,
+      );
+    }
 
-  return validateResponse(response, texts.length, model, batchLabel);
+    let response: EmbeddingApiResponse;
+    try {
+      response = (await httpResponse.json()) as EmbeddingApiResponse;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      throw new Error(
+        `Embedding response is not valid JSON (${batchLabel}, ` +
+        `model: ${model}, url: ${url}): ${message}`,
+      );
+    }
+
+    return validateResponse(response, texts.length, model, batchLabel);
+  }, 'create-embedding');
 }
 
 /**

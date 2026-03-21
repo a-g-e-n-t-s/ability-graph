@@ -10,7 +10,7 @@
 
 import { buildKeywordQuery } from '../keyword-filter.js';
 import { invokeWithRetry } from '../retry.js';
-import { escapeSQL } from '../sql.js';
+import { escapeSQL, buildFilterConditions, filterSystemProps } from '../sql.js';
 import type { ArcadeQueryResult, SignalContext, SignalResult } from '../types.js';
 import type { SignalImplementation } from './index.js';
 
@@ -80,43 +80,3 @@ export const keywordSignal: SignalImplementation = {
     });
   },
 };
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Build SQL WHERE conditions from a filters object.
- */
-function buildFilterConditions(filters: Record<string, unknown>): string {
-  const parts: string[] = [];
-
-  for (const [key, value] of Object.entries(filters)) {
-    if (value === null || value === undefined) continue;
-    if (typeof value === 'string') {
-      parts.push(`${key} = '${escapeSQL(value)}'`);
-    } else if (typeof value === 'number' || typeof value === 'boolean') {
-      parts.push(`${key} = ${value}`);
-    } else if (Array.isArray(value)) {
-      const escaped = value.map((v) =>
-        typeof v === 'string' ? `'${escapeSQL(v)}'` : String(v),
-      );
-      parts.push(`${key} IN [${escaped.join(', ')}]`);
-    }
-  }
-
-  return parts.join(' AND ');
-}
-
-/**
- * Filter out ArcadeDB system properties from a row.
- */
-function filterSystemProps(row: Record<string, unknown>): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(row)) {
-    if (!key.startsWith('@') && key !== 'score') {
-      result[key] = value;
-    }
-  }
-  return result;
-}

@@ -1,0 +1,28 @@
+{
+  "lockfileVersion": 1,
+  "metadata": {
+    "kadiVersion": "0.0.7",
+    "generated": "2026-03-21T17:12:14.295Z",
+    "metaHash": "sha256-3f316ecc80db2ed94e681082388d232d451b1e47444bc359e8012b203ee1fb25",
+    "source": "agent.json"
+  },
+  "agent": {
+    "name": "graph-ability",
+    "version": "0.0.7"
+  },
+  "abilities": {
+    "secret-ability@0.9.3": {
+      "version": "0.9.3",
+      "resolvedVersion": "0.9.3",
+      "requestedVersion": "^0.9.1",
+      "type": "ability",
+      "resolved": "abilities/secret-ability@0.9.3",
+      "entrypoint": "dist/index.js",
+      "integrity": "sha512-D0OEGZrJGuDYvc8XLcMHzpqnvt5x8ZuKKnBR/w8H7Rv02kI7Ctf4+oQ8nvsaN3SZiDysD32P3q6fEpayEAt0pw==",
+      "source": "http://kadi.build:8000",
+      "dependencies": {},
+      "isTopLevel": true,
+      "requiredBy": []
+    }
+  }
+}
