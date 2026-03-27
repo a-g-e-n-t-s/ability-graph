@@ -156,3 +156,47 @@ Troubleshooting
 
 License and contribution
 - See agent.json for package metadata. Follow your organization’s contribution guidelines for code and pull requests.
+
+## Quick Start
+
+```bash
+cd graph-ability
+npm install
+kadi install
+kadi run start
+```
+
+## Tools
+
+<!-- TODO: Add Tools content -->
+
+## Configuration
+
+### agent.json
+
+| Field | Value |
+|-------|-------|
+| **Version** | 0.0.7 |
+| **Type** | ability |
+| **Entrypoint** | `dist/index.js` |
+
+### Abilities
+
+- `secret-ability` ^0.9.1
+
+### Brokers
+
+- **default**: `wss://broker.kadi.build/kadi`
+- **local**: `ws://localhost:8080/kadi`
+
+## Architecture
+
+<!-- TODO: Add Architecture content -->
+
+## Development
+
+```bash
+npm install
+npm run build
+kadi run start
+```
