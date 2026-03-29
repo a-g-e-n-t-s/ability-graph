@@ -5,11 +5,11 @@
   "type": "ability",
   "entrypoint": "dist/index.js",
   "abilities": {
-    "secret-ability": "^0.9.1"
+    "secret-ability": "^0.9.4"
   },
   "brokers": {
-    "default": "wss://broker.kadi.build/kadi",
-    "local": "ws://localhost:8080/kadi"
+    "local": "ws://localhost:8080/kadi",
+    "remote": "wss://broker.dadavidtseng.info/kadi"
   },
   "scripts": {
     "setup": "npm install && npm run build",
