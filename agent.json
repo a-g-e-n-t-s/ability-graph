@@ -1,8 +1,8 @@
 {
-  "name": "graph-ability",
+  "name": "ability-graph",
+  "type": "ability",
   "version": "0.0.7",
   "description": "General-purpose graph storage and retrieval engine with N-signal hybrid search, schema registry, batch pipeline, and background processing — deployable as native library or remote broker ability",
-  "type": "ability",
   "entrypoint": "dist/index.js",
   "abilities": {
     "secret-ability": "^0.9.4"
@@ -12,8 +12,12 @@
     "remote": "wss://broker.dadavidtseng.info/kadi"
   },
   "scripts": {
+    "preflight": "node --version",
     "setup": "npm install && npm run build",
-    "start": "node dist/index.js broker"
+    "build": "npx tsc",
+    "start": "node dist/index.js broker",
+    "dev": "npx tsx src/index.ts",
+    "clean": "rm -rf node_modules abilities agent-lock.json package-lock.json dist"
   },
   "build": {
     "default": {
