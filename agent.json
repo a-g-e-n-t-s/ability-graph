@@ -9,7 +9,7 @@
   },
   "brokers": {
     "local": "ws://localhost:8080/kadi",
-    "remote": "wss://broker.dadavidtseng.info/kadi"
+    "remote": "wss://broker.dadavidtseng.com/kadi"
   },
   "scripts": {
     "preflight": "node --version",
