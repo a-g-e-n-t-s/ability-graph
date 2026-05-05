@@ -12,6 +12,7 @@
 
 import { invokeWithRetry } from './retry.js';
 import { escapeSQL } from './sql.js';
+import type { GraphConfig } from './config.js';
 import type {
   ArcadeCommandResult,
   ArcadeQueryResult,
@@ -78,6 +79,7 @@ export async function upsertTopic(
 
 /**
  * Upsert an Entity vertex — update lastSeen if exists, create new if not.
+ * Uses embedding-based deduplication to prevent near-duplicate entities.
  *
  * @returns The RID of the upserted Entity vertex.
  */
@@ -86,12 +88,13 @@ export async function upsertEntity(
   database: string,
   name: string,
   type: string,
+  config?: GraphConfig,
 ): Promise<string> {
   const now = new Date().toISOString();
   const safeName = escapeSQL(name);
   const safeType = escapeSQL(type);
 
-  // Check if exists
+  // Step 1: Exact match (fast path)
   const selectResult = await invokeWithRetry<ArcadeQueryResult>(
     abilities,
     'arcade-query',
@@ -114,10 +117,49 @@ export async function upsertEntity(
     return rid;
   }
 
-  // Create new
+  // Step 2: Embedding-based dedup (fuzzy match)
+  if (config) {
+    const { findSimilarEntity } = await import('./entity-dedup.js');
+    const dedup = await findSimilarEntity(name, type, abilities, database, config);
+    if (dedup.found && dedup.rid) {
+      await invokeWithRetry<ArcadeCommandResult>(
+        abilities,
+        'arcade-command',
+        {
+          database,
+          command: `UPDATE ${dedup.rid} SET lastSeen = '${now}'`,
+        },
+      );
+      return dedup.rid;
+    }
+  }
+
+  // Step 3: Create new entity with name embedding
+  let embeddingClause = '';
+  if (config?.apiUrl && config?.apiKey) {
+    try {
+      const url = `${config.apiUrl.replace(/\/$/, '')}/v1/embeddings`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${config.apiKey}`,
+        },
+        body: JSON.stringify({ model: config.embeddingModel, input: name }),
+      });
+      if (response.ok) {
+        const data = await response.json() as { data: Array<{ embedding: number[] }> };
+        const embedding = data.data?.[0]?.embedding;
+        if (embedding) {
+          embeddingClause = `, name_embedding = [${embedding.join(',')}]`;
+        }
+      }
+    } catch { /* skip embedding on failure */ }
+  }
+
   const createSql =
     `CREATE VERTEX Entity SET name = '${safeName}', type = '${safeType}',` +
-    ` firstSeen = '${now}', lastSeen = '${now}'`;
+    ` firstSeen = '${now}', lastSeen = '${now}'${embeddingClause}`;
 
   const createResult = await invokeWithRetry<ArcadeCommandResult>(
     abilities,

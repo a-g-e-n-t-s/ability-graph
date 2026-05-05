@@ -156,7 +156,7 @@ export function registerStoreTool(
         // Step 5: Upsert Entities and create Mentions edges
         for (const entity of entities) {
           try {
-            const entityRid = await upsertEntity(abilities, database, entity.name, entity.type);
+            const entityRid = await upsertEntity(abilities, database, entity.name, entity.type, config);
             await createEdge(abilities, database, 'Mentions', vertexRid, entityRid);
           } catch (err) {
             console.warn(`[graph-store] Failed to create entity "${entity.name}":`, err);

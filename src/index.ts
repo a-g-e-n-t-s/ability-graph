@@ -197,6 +197,7 @@ export {
   extractRid,
   filterSystemProps,
 } from './lib/graph.js';
+export { findSimilarEntity } from './lib/entity-dedup.js';
 export { loadGraphConfig, loadGraphConfigWithVault } from './lib/config.js';
 export { hybridRecall, registerSignal, getSignal, listSignals, clearSignals } from './lib/signals/index.js';
 export type { SignalImplementation } from './lib/signals/index.js';

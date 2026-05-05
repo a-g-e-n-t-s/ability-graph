@@ -327,7 +327,7 @@ async function processBatch(
 
         for (const entity of extraction.entities) {
           try {
-            const entityRid = await upsertEntity(abilities, database, entity.name, entity.type);
+            const entityRid = await upsertEntity(abilities, database, entity.name, entity.type, config);
             await createEdge(abilities, database, 'Mentions', vertexRid, entityRid);
           } catch {
             // Continue on entity edge failure

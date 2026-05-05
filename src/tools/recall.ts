@@ -43,6 +43,8 @@ export function registerRecallTool(
           .describe('Expand from top N results for structural (default: 5)'),
         filters: z.record(z.string(), z.unknown()).optional()
           .describe('Additional WHERE clause filters'),
+        includeInvalid: z.boolean().optional()
+          .describe('Include soft-deleted records (valid=false). Default: false'),
         limit: z.number().optional().describe('Max results (default: 10)'),
         database: z.string().optional().describe('Target database'),
         embedding: z.object({
@@ -61,6 +63,12 @@ export function registerRecallTool(
 
         const mode = input.mode ?? 'hybrid';
 
+        // Inject valid=true filter unless includeInvalid is set
+        const filters = { ...(input.filters ?? {}) };
+        if (!input.includeInvalid) {
+          filters.valid = true;
+        }
+
         // For single-mode, use only that signal
         let signals: string[];
         if (mode === 'hybrid') {
@@ -77,7 +85,7 @@ export function registerRecallTool(
           structuralEdges: input.structuralEdges,
           structuralDepth: input.structuralDepth,
           structuralTopK: input.structuralTopK,
-          filters: input.filters,
+          filters,
           limit: input.limit ?? 10,
           database: input.database ?? config.database,
           embedding: input.embedding ?? {
