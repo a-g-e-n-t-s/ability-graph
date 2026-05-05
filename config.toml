@@ -5,3 +5,17 @@
 URL = "ws://localhost:8080/kadi"
 NETWORKS = ["graph"]
 MODE = "native"
+
+[broker.remote]
+URL = "wss://broker.dadavidtseng.com/kadi"
+NETWORKS = ["graph"]
+MODE = "native"
+
+[graph]
+database = "agents_memory"
+embedding_model = "text-embedding-3-small"
+extraction_model = "gpt-5-nano"
+chat_model = "gpt-5-mini"
+default_agent = "default"
+embedding_transport = "api"
+chat_transport = "api"

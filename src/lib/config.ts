@@ -4,16 +4,56 @@
  * Resolution order (highest wins):
  *   1. Environment variables  (GRAPH_DATABASE, MEMORY_API_KEY, ...)
  *   2. Vault "models"         (MEMORY_API_KEY, MEMORY_API_URL — encrypted in secrets.toml)
- *   3. `config.yml` file      (walk-up from CWD — non-secret settings only)
+ *   3. `config.toml` file     (walk-up from CWD — [graph] or [memory] section)
  *   4. Built-in defaults
  *
- * Credentials (API keys, URLs containing tokens) NEVER appear in config.yml.
+ * Credentials (API keys, URLs containing tokens) NEVER appear in config.toml.
  * They are loaded from the vault at startup via loadNative('secret-ability').
  */
 
 import { existsSync, readFileSync } from 'fs';
 import { dirname, join } from 'path';
-import { load } from 'js-yaml';
+
+// ── Lightweight TOML parser (same pattern as agents-library/src/utils/config.ts) ──
+
+function parseTomlValue(raw: string): unknown {
+  if (raw === 'true') return true;
+  if (raw === 'false') return false;
+  if (/^-?\d+$/.test(raw)) return parseInt(raw, 10);
+  if (/^-?\d+\.\d+$/.test(raw)) return parseFloat(raw);
+  if (raw.startsWith('"') && raw.endsWith('"')) return raw.slice(1, -1);
+  if (raw.startsWith("'") && raw.endsWith("'")) return raw.slice(1, -1);
+  if (raw.startsWith('[') && raw.endsWith(']')) {
+    return raw.slice(1, -1).split(',').map(s => parseTomlValue(s.trim()));
+  }
+  return raw;
+}
+
+function parseSimpleToml(content: string): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  let currentSection = '';
+
+  for (const rawLine of content.split('\n')) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+
+    const sectionMatch = line.match(/^\[([a-zA-Z0-9._-]+)\]$/);
+    if (sectionMatch) {
+      currentSection = sectionMatch[1];
+      continue;
+    }
+
+    const kvMatch = line.match(/^([a-zA-Z0-9_-]+)\s*=\s*(.+)$/);
+    if (!kvMatch) continue;
+
+    const key = kvMatch[1];
+    const rawValue = kvMatch[2].trim();
+    const fullKey = currentSection ? `${currentSection}.${key}` : key;
+    result[fullKey] = parseTomlValue(rawValue);
+  }
+
+  return result;
+}
 
 /** Track whether config has already been logged to avoid log spam. */
 let configLogged = false;
@@ -40,12 +80,12 @@ export const VAULT_NAME = 'models';
 /** Keys read from the "models" vault. */
 export const VAULT_KEYS = ['MEMORY_API_KEY', 'MEMORY_API_URL'] as const;
 
-// ── Walk-up config.yml discovery ──────────────────────────────────────
+// ── Walk-up config.toml discovery ──────────────────────────────────────
 
 /**
- * Walk up from CWD looking for config.yml.
+ * Walk up from CWD looking for config.toml.
  */
-function findConfigFile(filename = 'config.yml'): string | null {
+function findConfigFile(filename = 'config.toml'): string | null {
   let dir = process.cwd();
   while (true) {
     const candidate = join(dir, filename);
@@ -67,7 +107,7 @@ function loadConfigSection(): Record<string, unknown> {
     if (!configLogged) {
       configLogged = true;
       console.warn(
-        '[graph-ability] No config.yml found in directory tree — using env vars / vault only',
+        '[graph-ability] No config.toml found in directory tree — using env vars / vault only',
       );
     }
     return {};
@@ -75,13 +115,25 @@ function loadConfigSection(): Record<string, unknown> {
 
   if (!configLogged) {
     configLogged = true;
-    console.log(`[graph-ability] config.yml loaded from ${configPath}`);
+    console.log(`[graph-ability] config.toml loaded from ${configPath}`);
   }
-  const parsed = load(readFileSync(configPath, 'utf8')) as Record<string, unknown>;
-  // Prefer `graph` section, fall back to `memory` section
-  return (parsed?.graph as Record<string, unknown>) ??
-         (parsed?.memory as Record<string, unknown>) ??
-         {};
+
+  const content = readFileSync(configPath, 'utf8');
+  const flat = parseSimpleToml(content);
+
+  // Extract graph.* keys, fall back to memory.* for backward compatibility
+  const section: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(flat)) {
+    if (key.startsWith('graph.')) {
+      section[key.slice('graph.'.length)] = value;
+    } else if (key.startsWith('memory.')) {
+      const memKey = key.slice('memory.'.length);
+      if (!(memKey in section)) {
+        section[memKey] = value;
+      }
+    }
+  }
+  return section;
 }
 
 // ── Vault loading ─────────────────────────────────────────────────────
@@ -150,7 +202,7 @@ export async function loadGraphConfigWithVault(
 }
 
 /**
- * Internal config builder. Merges env vars, vault, config.yml, and defaults.
+ * Internal config builder. Merges env vars, vault, config.toml, and defaults.
  */
 function buildConfig(vault: Record<string, string>): GraphConfig {
   const file = loadConfigSection();
@@ -160,7 +212,7 @@ function buildConfig(vault: Record<string, string>): GraphConfig {
       process.env.GRAPH_DATABASE ??
       process.env.MEMORY_DATABASE ??
       (file.database as string) ??
-      'kadi_memory',
+      'agents_memory',
     embeddingModel:
       process.env.GRAPH_EMBEDDING_MODEL ??
       process.env.MEMORY_EMBEDDING_MODEL ??

@@ -57,7 +57,7 @@ export function registerContextTool(
         const recalled = await hybridRecall(request, abilities, config);
 
         // Step 2: Expand each result via graph traversal
-        const contextResults = [];
+        const contextResults: Array<Record<string, unknown>> = [];
 
         for (const result of recalled) {
           if (!result.rid) continue;

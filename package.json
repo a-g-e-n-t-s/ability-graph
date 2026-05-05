@@ -1,6 +1,6 @@
 {
   "name": "ability-graph",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "General-purpose graph storage and retrieval engine with N-signal hybrid search, schema registry, batch pipeline, and background processing",
   "type": "module",
   "main": "dist/index.js",
@@ -13,11 +13,9 @@
     "test:integration": "vitest run tests/integration"
   },
   "dependencies": {
-    "@kadi.build/core": "^0.11.2",
-    "js-yaml": "^4.1.0"
+    "@kadi.build/core": "*"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.0.0",
     "typescript": "^5.7.0",
     "tsx": "^4.0.0",

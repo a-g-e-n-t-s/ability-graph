@@ -1,11 +1,11 @@
 {
   "name": "ability-graph",
   "type": "ability",
-  "version": "0.0.7",
+  "version": "0.0.13",
   "description": "General-purpose graph storage and retrieval engine with N-signal hybrid search, schema registry, batch pipeline, and background processing — deployable as native library or remote broker ability",
   "entrypoint": "dist/index.js",
   "abilities": {
-    "secret-ability": "^0.9.4"
+    "secret-ability": "*"
   },
   "brokers": {
     "local": "ws://localhost:8080/kadi",
@@ -21,7 +21,7 @@
   },
   "build": {
     "default": {
-      "image": "graph-ability:1.0.0",
+      "image": "ability-graph:0.0.13",
       "from": "node:22-slim",
       "platform": "linux/amd64",
       "cli": "latest",
@@ -46,7 +46,7 @@
       "engine": "docker",
       "services": {
         "agent": {
-          "image": "graph-ability:1.0.0",
+          "image": "ability-graph:1.0.0",
           "command": [
             "sh",
             "-c",
