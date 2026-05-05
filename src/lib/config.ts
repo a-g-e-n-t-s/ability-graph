@@ -74,11 +74,11 @@ export interface GraphConfig {
 
 // ── Vault key names ───────────────────────────────────────────────────
 
-/** Vault name where model-manager credentials are stored. */
-export const VAULT_NAME = 'models';
+/** Vault name for model-manager credentials. */
+export const VAULT_NAME = 'model-manager';
 
-/** Keys read from the "models" vault. */
-export const VAULT_KEYS = ['MEMORY_API_KEY', 'MEMORY_API_URL'] as const;
+/** Keys read from the vault. */
+export const VAULT_KEYS = ['MODEL_MANAGER_BASE_URL', 'MODEL_MANAGER_API_KEY'] as const;
 
 // ── Walk-up config.toml discovery ──────────────────────────────────────
 
@@ -139,10 +139,10 @@ function loadConfigSection(): Record<string, unknown> {
 // ── Vault loading ─────────────────────────────────────────────────────
 
 /**
- * Load credentials from the "models" vault via secret-ability.
+ * Load credentials from the "model-manager" vault via secret-ability.
  *
  * @param client - KadiClient instance (for loadNative)
- * @returns Map of vault key → decrypted value.
+ * @returns Map of normalized key → decrypted value.
  */
 export async function loadFromVault(
   client: any,
@@ -162,13 +162,22 @@ export async function loadFromVault(
           credentials[key] = result.value;
         }
       } catch {
-        // Key not present in vault — skip silently
+        // Key not present — skip
       }
     }
 
+    // Normalize to internal key names
+    if (credentials['MODEL_MANAGER_BASE_URL']) {
+      credentials['MEMORY_API_URL'] = credentials['MODEL_MANAGER_BASE_URL'];
+    }
+    if (credentials['MODEL_MANAGER_API_KEY']) {
+      credentials['MEMORY_API_KEY'] = credentials['MODEL_MANAGER_API_KEY'];
+    }
+
     await secrets.disconnect();
+    const found = Object.keys(credentials).filter(k => VAULT_KEYS.includes(k as any)).length;
     console.log(
-      `[graph-ability] Vault "${VAULT_NAME}" loaded — ${Object.keys(credentials).length}/${VAULT_KEYS.length} keys found`,
+      `[graph-ability] Vault "${VAULT_NAME}" loaded — ${found}/${VAULT_KEYS.length} keys found`,
     );
   } catch (err: any) {
     console.warn(

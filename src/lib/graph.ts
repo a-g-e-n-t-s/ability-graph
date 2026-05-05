@@ -151,11 +151,15 @@ export async function createVertex(
   const contentJson = JSON.stringify(properties);
   const command = `CREATE VERTEX ${escapeSQL(vertexType)} CONTENT ${contentJson}`;
 
+  console.log(`[graph-ability] createVertex: db=${database} type=${vertexType} cmd=${command.slice(0, 120)}...`);
+
   const result = await invokeWithRetry<ArcadeCommandResult>(
     abilities,
     'arcade-command',
     { database, command },
   );
+
+  console.log(`[graph-ability] createVertex result:`, JSON.stringify(result).slice(0, 200));
 
   if (!result.success) {
     throw new Error(

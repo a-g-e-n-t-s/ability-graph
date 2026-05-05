@@ -1,7 +1,7 @@
 {
   "name": "ability-graph",
   "type": "ability",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "description": "General-purpose graph storage and retrieval engine with N-signal hybrid search, schema registry, batch pipeline, and background processing — deployable as native library or remote broker ability",
   "entrypoint": "dist/index.js",
   "abilities": {
@@ -21,7 +21,7 @@
   },
   "build": {
     "default": {
-      "image": "ability-graph:0.0.13",
+      "image": "ability-graph:0.0.15",
       "from": "node:22-slim",
       "platform": "linux/amd64",
       "cli": "latest",
@@ -50,15 +50,15 @@
           "command": [
             "sh",
             "-c",
-            "kadi secret receive --vault models && kadi run start"
+            "kadi secret receive --vault model-manager && kadi run start"
           ]
         }
       },
       "secrets": {
-        "vault": "models",
+        "vault": "model-manager",
         "required": [
-          "MEMORY_API_KEY",
-          "MEMORY_API_URL"
+          "MODEL_MANAGER_BASE_URL",
+          "MODEL_MANAGER_API_KEY"
         ],
         "delivery": "broker"
       }

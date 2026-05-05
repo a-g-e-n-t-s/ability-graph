@@ -1,9 +1,9 @@
 /**
- * graph-chat tool — chat completion passthrough via the broker's model-manager.
+ * graph-chat tool — chat completion via model-manager HTTP API or broker.
  *
- * Sends a chat completion request with configurable model, temperature, and
- * token limits. Uses invokeWithRetry for automatic retry with exponential
- * backoff.
+ * When chatTransport='api' (default): calls model-manager directly via HTTP
+ * (OpenAI-compatible /v1/chat/completions endpoint).
+ * When chatTransport='broker': falls back to invokeRemote('chat-completion').
  */
 
 import { KadiClient, z } from '@kadi.build/core';
@@ -40,24 +40,30 @@ export function registerChatTool(
     },
     async (input) => {
       try {
+        const apiKey = input.api_key ?? config.apiKey;
+        const model = input.model ?? config.chatModel;
+        const temperature = input.temperature ?? 0.7;
+        const maxTokens = input.max_tokens ?? 500;
+
+        // Direct HTTP call to model-manager (OpenAI-compatible)
+        if (config.chatTransport === 'api' && config.apiUrl && apiKey) {
+          const result = await callModelManagerHTTP(
+            config.apiUrl, apiKey, model, input.messages, temperature, maxTokens,
+          );
+          return { success: true, result };
+        }
+
+        // Fallback: broker-based chat-completion tool
         const params: Record<string, unknown> = {
-          model: input.model ?? config.chatModel,
+          model,
           messages: input.messages,
-          temperature: input.temperature ?? 0.7,
-          max_tokens: input.max_tokens ?? 500,
-          api_key: input.api_key ?? config.apiKey,
+          temperature,
+          max_tokens: maxTokens,
+          api_key: apiKey,
         };
 
-        const result = await invokeWithRetry(
-          abilities,
-          'chat-completion',
-          params,
-        );
-
-        return {
-          success: true,
-          result,
-        };
+        const result = await invokeWithRetry(abilities, 'chat-completion', params);
+        return { success: true, result };
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
         return {
@@ -68,4 +74,50 @@ export function registerChatTool(
       }
     },
   );
+}
+
+// ── Direct HTTP call to model-manager ─────────────────────────────────
+
+async function callModelManagerHTTP(
+  baseUrl: string,
+  apiKey: string,
+  model: string,
+  messages: Array<{ role: string; content: string }>,
+  temperature: number,
+  maxTokens: number,
+): Promise<{ content: string; model: string; usage?: Record<string, number> }> {
+  const url = `${baseUrl.replace(/\/$/, '')}/v1/chat/completions`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature,
+      max_tokens: maxTokens,
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => '');
+    throw new Error(`Model manager HTTP ${response.status}: ${errorText.slice(0, 200)}`);
+  }
+
+  const data = await response.json() as {
+    choices: Array<{ message: { content: string | null } }>;
+    model: string;
+    usage?: Record<string, number>;
+  };
+
+  const content = data.choices?.[0]?.message?.content;
+  if (content === null || content === undefined) {
+    throw new Error('Model manager returned no content');
+  }
+
+  return { content, model: data.model, usage: data.usage };
 }
