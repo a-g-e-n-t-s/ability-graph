@@ -63,9 +63,9 @@ export function registerRecallTool(
 
         const mode = input.mode ?? 'hybrid';
 
-        // Inject valid=true filter unless includeInvalid is set
+        // Inject valid=true filter for Memory vertices unless includeInvalid is set
         const filters = { ...(input.filters ?? {}) };
-        if (!input.includeInvalid) {
+        if (!input.includeInvalid && input.vertexType === 'Memory') {
           filters.valid = true;
         }
 

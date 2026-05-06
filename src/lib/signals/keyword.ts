@@ -48,11 +48,15 @@ export const keywordSignal: SignalImplementation = {
       ` ORDER BY score DESC` +
       ` LIMIT ${limit}`;
 
+    console.log(`[keyword-signal] SQL: ${sql.slice(0, 200)}`);
+
     const result = await invokeWithRetry<ArcadeQueryResult>(
       abilities,
       'arcade-query',
       { database, query: sql },
     );
+
+    console.log(`[keyword-signal] result: success=${result.success} count=${result.result?.length ?? 0}`);
 
     if (!result.success || !result.result) {
       return [];

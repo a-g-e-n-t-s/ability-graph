@@ -41,6 +41,7 @@ import { registerChatTool } from './tools/chat.js';
 import { registerFindTool } from './tools/find.js';
 import { registerCountTool } from './tools/count.js';
 import { registerRepairEmbeddingsTool } from './tools/repair-embeddings.js';
+import { registerIndexTools } from './tools/index.js';
 
 // ── Read broker config from agent.json ────────────────────────────────
 
@@ -129,8 +130,9 @@ registerChatTool(client, config);
 registerFindTool(client, config);
 registerCountTool(client, config);
 registerRepairEmbeddingsTool(client, config);
+registerIndexTools(client, config);
 
-console.log('[graph-ability] 16 tools registered');
+console.log(`[graph-ability] ${(client as any).getTools?.()?.length ?? '?'} tools registered`);
 
 // ── CLI entry point (kadi run / direct execution) ─────────────────────
 //
@@ -198,6 +200,9 @@ export {
   filterSystemProps,
 } from './lib/graph.js';
 export { findSimilarEntity } from './lib/entity-dedup.js';
+export { chunkContent } from './lib/chunker.js';
+export type { Chunk, ChunkOptions, ChunkStrategy, ChunkMetadata } from './lib/chunker.js';
+export { estimateTokens, splitAtSentenceBoundary } from './lib/tokens.js';
 export { loadGraphConfig, loadGraphConfigWithVault } from './lib/config.js';
 export { hybridRecall, registerSignal, getSignal, listSignals, clearSignals } from './lib/signals/index.js';
 export type { SignalImplementation } from './lib/signals/index.js';
