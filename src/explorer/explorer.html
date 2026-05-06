@@ -3,21 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KĀDI Graph Explorer</title>
+    <title>AGENTS Graph Explorer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background:
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%),
-                linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
+            background: #000000;
             min-height: 100vh;
-            color: #e2e8f0;
+            color: #ededed;
             overflow: hidden;
         }
 
@@ -27,9 +23,9 @@
             align-items: center;
             justify-content: space-between;
             padding: 12px 24px;
-            background: rgba(15, 15, 35, 0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(120, 219, 255, 0.2);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             position: relative;
             z-index: 100;
         }
@@ -40,14 +36,14 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(120, 219, 255, 0.8) 20%, rgba(255, 119, 198, 0.8) 80%, transparent 100%);
+            background: linear-gradient(90deg, transparent 0%, rgba(0, 112, 243, 0.6) 50%, transparent 100%);
         }
         .logo {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 22px;
             font-weight: 900;
-            color: #78dbff;
-            text-shadow: 0 0 20px rgba(120, 219, 255, 0.5);
+            color: #0070f3;
+            text-shadow: 0 0 20px rgba(0, 112, 243, 0.3);
             letter-spacing: 1px;
         }
         .header-center {
@@ -89,24 +85,24 @@
         }
         .db-select {
             padding: 8px 16px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 8px;
-            background: rgba(15, 15, 35, 0.8);
-            color: #e2e8f0;
-            font-family: 'Rajdhani', sans-serif;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ededed;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
         }
         .db-select:focus {
             outline: none;
-            border-color: #78dbff;
-            box-shadow: 0 0 0 2px rgba(120, 219, 255, 0.2);
+            border-color: #0070f3;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06);
         }
         .node-count {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
-            color: #94a3b8;
+            color: #888888;
         }
 
         /* ── Layout ─────────────────────────────────────────────── */
@@ -119,22 +115,22 @@
         .left-sidebar {
             width: 380px;
             min-width: 300px;
-            background: rgba(15, 15, 35, 0.85);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(120, 219, 255, 0.2);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(12px) saturate(180%);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
         .sidebar-section {
             padding: 16px 20px;
-            border-bottom: 1px solid rgba(120, 219, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
         }
         .section-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
             font-weight: 600;
-            color: #78dbff;
+            color: #0070f3;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 12px;
@@ -144,16 +140,16 @@
         .search-box {
             width: 100%;
             padding: 10px 14px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 8px;
-            background: rgba(15, 15, 35, 0.6);
-            color: #e2e8f0;
-            font-family: 'Rajdhani', sans-serif;
+            background: rgba(0, 0, 0, 0.6);
+            color: #ededed;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 500;
             font-size: 14px;
         }
-        .search-box:focus { outline: none; border-color: #78dbff; box-shadow: 0 0 0 2px rgba(120, 219, 255, 0.2); }
-        .search-box::placeholder { color: #64748b; }
+        .search-box:focus { outline: none; border-color: #0070f3; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06); }
+        .search-box::placeholder { color: #555555; }
         .search-results { margin-top: 8px; max-height: 200px; overflow-y: auto; }
         .search-result-item {
             padding: 8px 12px;
@@ -163,9 +159,9 @@
             transition: background 0.2s;
             border: 1px solid transparent;
         }
-        .search-result-item:hover { background: rgba(120, 219, 255, 0.1); border-color: rgba(120, 219, 255, 0.2); }
-        .search-result-type { font-family: 'Orbitron', monospace; font-size: 10px; color: #8b5cf6; }
-        .search-result-content { color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .search-result-item:hover { background: rgba(0, 112, 243, 0.1); border-color: rgba(255, 255, 255, 0.06); }
+        .search-result-type { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; font-size: 10px; color: #0070f3; }
+        .search-result-content { color: #888888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Schema tree */
         .schema-tree { font-size: 14px; }
@@ -179,30 +175,30 @@
             transition: background 0.2s;
             margin-bottom: 2px;
         }
-        .schema-type:hover { background: rgba(120, 219, 255, 0.1); }
-        .schema-type.active { background: rgba(120, 219, 255, 0.15); border-left: 2px solid #78dbff; }
+        .schema-type:hover { background: rgba(0, 112, 243, 0.1); }
+        .schema-type.active { background: rgba(0, 112, 243, 0.1); border-left: 2px solid #0070f3; }
         .schema-type-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             flex-shrink: 0;
         }
-        .schema-type-name { font-weight: 600; color: #e2e8f0; }
-        .schema-type-count { font-family: 'Orbitron', monospace; font-size: 11px; color: #64748b; margin-left: auto; }
+        .schema-type-name { font-weight: 600; color: #ededed; }
+        .schema-type-count { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; font-size: 11px; color: #555555; margin-left: auto; }
         .schema-type-props {
             padding-left: 28px;
             font-size: 12px;
-            color: #94a3b8;
+            color: #888888;
             display: none;
         }
         .schema-type-props.expanded { display: block; }
         .schema-prop { padding: 2px 0; }
-        .schema-prop-name { color: #78dbff; }
-        .schema-prop-type { color: #64748b; margin-left: 6px; }
+        .schema-prop-name { color: #0070f3; }
+        .schema-prop-type { color: #555555; margin-left: 6px; }
         .schema-section-label {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 10px;
-            color: #64748b;
+            color: #555555;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 10px 0 6px 0;
@@ -215,7 +211,7 @@
             align-items: center;
             gap: 6px;
             font-size: 12px;
-            color: #94a3b8;
+            color: #888888;
         }
         .legend-dot {
             width: 10px;
@@ -241,9 +237,9 @@
             background: transparent;
         }
         .graph-container svg .node circle { cursor: pointer; stroke-width: 2; }
-        .graph-container svg .node circle:hover { stroke-width: 3; filter: drop-shadow(0 0 8px rgba(120, 219, 255, 0.5)); }
+        .graph-container svg .node circle:hover { stroke-width: 3; filter: drop-shadow(0 0 8px rgba(0, 112, 243, 0.3)); }
         .graph-container svg .node.selected circle { stroke-width: 4; stroke: #00d4ff; filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.6)); }
-        .graph-container svg .node text { font-family: 'Rajdhani', sans-serif; font-size: 11px; fill: #94a3b8; pointer-events: none; }
+        .graph-container svg .node text { font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; font-size: 11px; fill: #888888; pointer-events: none; }
         .graph-container svg .link { stroke-opacity: 0.4; }
         .graph-container svg .link:hover { stroke-opacity: 0.8; }
 
@@ -251,14 +247,14 @@
         .right-panel {
             width: 380px;
             min-width: 300px;
-            background: rgba(15, 15, 35, 0.85);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(120, 219, 255, 0.2);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(12px) saturate(180%);
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
             overflow-y: auto;
         }
         .detail-header {
             padding: 16px 20px;
-            border-bottom: 1px solid rgba(120, 219, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -266,69 +262,69 @@
         .detail-rid {
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
-            color: #78dbff;
+            color: #0070f3;
         }
         .detail-type {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 11px;
             padding: 3px 10px;
             border-radius: 12px;
             background: rgba(139, 92, 246, 0.2);
-            color: #a78bfa;
+            color: #3d9aff;
             border: 1px solid rgba(139, 92, 246, 0.3);
         }
         .copy-btn {
             padding: 4px 10px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 6px;
-            background: rgba(15, 15, 35, 0.6);
-            color: #78dbff;
+            background: rgba(0, 0, 0, 0.6);
+            color: #0070f3;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
             transition: all 0.2s;
         }
-        .copy-btn:hover { background: rgba(120, 219, 255, 0.1); border-color: #78dbff; }
-        .detail-section { padding: 12px 20px; border-bottom: 1px solid rgba(120, 219, 255, 0.05); }
+        .copy-btn:hover { background: rgba(0, 112, 243, 0.1); border-color: #0070f3; }
+        .detail-section { padding: 12px 20px; border-bottom: 1px solid rgba(0, 112, 243, 0.05); }
         .detail-section-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 10px;
-            color: #64748b;
+            color: #555555;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
         }
         .props-table { width: 100%; }
-        .props-table tr { border-bottom: 1px solid rgba(120, 219, 255, 0.05); }
+        .props-table tr { border-bottom: 1px solid rgba(0, 112, 243, 0.05); }
         .props-table td { padding: 4px 0; vertical-align: top; font-size: 13px; }
-        .props-table .prop-key { color: #78dbff; font-weight: 600; white-space: nowrap; padding-right: 12px; width: 1%; }
-        .props-table .prop-val { color: #cbd5e1; word-break: break-all; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+        .props-table .prop-key { color: #0070f3; font-weight: 600; white-space: nowrap; padding-right: 12px; width: 1%; }
+        .props-table .prop-val { color: #888888; word-break: break-all; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
         .edge-group { margin-bottom: 8px; }
-        .edge-group-title { font-weight: 600; color: #a78bfa; font-size: 13px; margin-bottom: 4px; }
+        .edge-group-title { font-weight: 600; color: #3d9aff; font-size: 13px; margin-bottom: 4px; }
         .edge-item {
             padding: 3px 8px;
             font-size: 12px;
-            color: #94a3b8;
+            color: #888888;
             cursor: pointer;
             border-radius: 4px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
-        .edge-item:hover { background: rgba(120, 219, 255, 0.1); color: #e2e8f0; }
-        .edge-direction { font-family: 'JetBrains Mono', monospace; color: #64748b; }
+        .edge-item:hover { background: rgba(0, 112, 243, 0.1); color: #ededed; }
+        .edge-direction { font-family: 'JetBrains Mono', monospace; color: #555555; }
         .empty-detail {
             padding: 40px 20px;
             text-align: center;
-            color: #64748b;
+            color: #555555;
             font-size: 14px;
         }
 
         /* ── Bottom Bar (Query Workbench) ───────────────────────── */
         .bottom-bar {
-            border-top: 1px solid rgba(120, 219, 255, 0.2);
-            background: rgba(15, 15, 35, 0.9);
-            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px) saturate(180%);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -341,17 +337,17 @@
             justify-content: space-between;
             padding: 6px 20px;
             cursor: pointer;
-            border-bottom: 1px solid rgba(120, 219, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
             flex-shrink: 0;
         }
         .bottom-bar-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 11px;
-            color: #78dbff;
+            color: #0070f3;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        .bottom-bar-toggle { color: #64748b; font-size: 16px; cursor: pointer; user-select: none; }
+        .bottom-bar-toggle { color: #555555; font-size: 16px; cursor: pointer; user-select: none; }
         .bottom-bar-content {
             display: flex;
             flex: 1;
@@ -363,22 +359,22 @@
             display: flex;
             flex-direction: column;
             padding: 12px 20px;
-            border-right: 1px solid rgba(120, 219, 255, 0.1);
+            border-right: 1px solid rgba(0, 112, 243, 0.1);
         }
         .sql-textarea {
             flex: 1;
             resize: none;
-            border: 1px solid rgba(120, 219, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 8px;
             background: rgba(10, 10, 25, 0.8);
-            color: #e2e8f0;
+            color: #ededed;
             font-family: 'JetBrains Mono', monospace;
             font-size: 13px;
             padding: 10px;
             line-height: 1.5;
         }
-        .sql-textarea:focus { outline: none; border-color: #78dbff; }
-        .sql-textarea::placeholder { color: #475569; }
+        .sql-textarea:focus { outline: none; border-color: #0070f3; }
+        .sql-textarea::placeholder { color: #555555; }
         .sql-actions {
             display: flex;
             align-items: center;
@@ -387,20 +383,20 @@
         }
         .run-btn {
             padding: 6px 20px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            background: linear-gradient(135deg, #0070f3, #0060d0);
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 700;
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transition: all 0.2s;
         }
-        .run-btn:hover { background: linear-gradient(135deg, #2563eb, #1e40af); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
-        .run-hint { font-size: 11px; color: #64748b; }
+        .run-btn:hover { background: linear-gradient(135deg, #0070f3, #004bb5); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        .run-hint { font-size: 11px; color: #555555; }
         .results-wrap {
             flex: 1;
             display: flex;
@@ -414,18 +410,18 @@
         }
         .results-tab {
             padding: 4px 16px;
-            border: 1px solid rgba(120, 219, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-bottom: none;
             border-radius: 6px 6px 0 0;
             background: transparent;
-            color: #64748b;
-            font-family: 'Rajdhani', sans-serif;
+            color: #555555;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .results-tab.active { background: rgba(120, 219, 255, 0.1); color: #78dbff; border-color: rgba(120, 219, 255, 0.4); }
+        .results-tab.active { background: rgba(0, 112, 243, 0.1); color: #0070f3; border-color: rgba(0, 112, 243, 0.2); }
         .results-area {
             flex: 1;
             overflow: auto;
@@ -440,39 +436,39 @@
         .results-area th {
             text-align: left;
             padding: 6px 10px;
-            background: rgba(120, 219, 255, 0.1);
-            color: #78dbff;
+            background: rgba(0, 112, 243, 0.1);
+            color: #0070f3;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(120, 219, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             white-space: nowrap;
         }
         .results-area td {
             padding: 4px 10px;
-            color: #cbd5e1;
-            border-bottom: 1px solid rgba(120, 219, 255, 0.05);
+            color: #888888;
+            border-bottom: 1px solid rgba(0, 112, 243, 0.05);
             max-width: 300px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
         .results-area pre {
-            color: #cbd5e1;
+            color: #888888;
             white-space: pre-wrap;
             word-break: break-all;
         }
-        .results-area .results-empty { color: #475569; font-style: italic; }
+        .results-area .results-empty { color: #555555; font-style: italic; }
 
         /* ── Scrollbar ──────────────────────────────────────────── */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(120, 219, 255, 0.2); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(120, 219, 255, 0.4); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.06); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 112, 243, 0.2); }
 
         /* ── Animations ─────────────────────────────────────────── */
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .loading { animation: pulse 1.5s ease-in-out infinite; color: #64748b; }
+        .loading { animation: pulse 1.5s ease-in-out infinite; color: #555555; }
 
         /* ── Phase 2: Layout Toolbar ────────────────────────────── */
         .layout-toolbar {
@@ -480,23 +476,23 @@
             align-items: center;
             gap: 4px;
             padding: 6px 12px;
-            background: rgba(15, 15, 35, 0.85);
-            border-bottom: 1px solid rgba(120, 219, 255, 0.15);
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
         }
         .layout-btn {
             padding: 4px 14px;
             border: 1px solid rgba(120, 219, 255, 0.25);
             border-radius: 6px;
             background: transparent;
-            color: #94a3b8;
-            font-family: 'Rajdhani', sans-serif;
+            color: #888888;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .layout-btn.active { background: rgba(120, 219, 255, 0.15); color: #78dbff; border-color: rgba(120, 219, 255, 0.5); }
-        .layout-btn:hover { background: rgba(120, 219, 255, 0.1); color: #e2e8f0; }
+        .layout-btn.active { background: rgba(0, 112, 243, 0.1); color: #0070f3; border-color: rgba(0, 112, 243, 0.3); }
+        .layout-btn:hover { background: rgba(0, 112, 243, 0.1); color: #ededed; }
 
         /* ── Graph Controls ──────────────────────────────────────── */
         .graph-controls {
@@ -504,25 +500,25 @@
             align-items: center;
             gap: 8px;
             padding: 5px 12px;
-            background: rgba(15, 15, 35, 0.7);
-            border-bottom: 1px solid rgba(120, 219, 255, 0.1);
+            background: rgba(0, 0, 0, 0.7);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
             flex-wrap: wrap;
         }
         .graph-controls label {
-            color: #64748b;
+            color: #555555;
             font-size: 11px;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .graph-controls select {
             background: rgba(30, 30, 60, 0.9);
-            color: #e2e8f0;
+            color: #ededed;
             border: 1px solid rgba(120, 219, 255, 0.25);
             border-radius: 4px;
             padding: 3px 8px;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
             cursor: pointer;
         }
@@ -531,32 +527,32 @@
             border: 1px solid rgba(120, 219, 255, 0.25);
             border-radius: 4px;
             background: transparent;
-            color: #94a3b8;
-            font-family: 'Rajdhani', sans-serif;
+            color: #888888;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             font-size: 11px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .graph-ctrl-btn:hover { background: rgba(120, 219, 255, 0.1); color: #e2e8f0; }
-        .graph-ctrl-btn.danger { border-color: rgba(239, 68, 68, 0.3); color: #94a3b8; }
+        .graph-ctrl-btn:hover { background: rgba(0, 112, 243, 0.1); color: #ededed; }
+        .graph-ctrl-btn.danger { border-color: rgba(239, 68, 68, 0.3); color: #888888; }
         .graph-ctrl-btn.danger:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-        .graph-ctrl-btn.primary { border-color: rgba(120, 219, 255, 0.5); color: #78dbff; }
-        .graph-ctrl-btn.primary:hover { background: rgba(120, 219, 255, 0.15); }
+        .graph-ctrl-btn.primary { border-color: rgba(0, 112, 243, 0.3); color: #0070f3; }
+        .graph-ctrl-btn.primary:hover { background: rgba(0, 112, 243, 0.1); }
         .graph-hint {
-            color: #475569;
+            color: #555555;
             font-size: 10px;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             margin-left: auto;
         }
         .graph-hint kbd {
-            background: rgba(120, 219, 255, 0.1);
-            border: 1px solid rgba(120, 219, 255, 0.2);
+            background: rgba(0, 112, 243, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 3px;
             padding: 1px 4px;
             font-size: 10px;
             font-family: 'JetBrains Mono', monospace;
-            color: #64748b;
+            color: #555555;
         }
 
         /* ── Phase 2: Main Tabs ─────────────────────────────────── */
@@ -564,17 +560,17 @@
             display: flex;
             gap: 2px;
             padding: 6px 12px 0;
-            background: rgba(15, 15, 35, 0.85);
-            border-bottom: 1px solid rgba(120, 219, 255, 0.15);
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
         }
         .main-tab {
             padding: 5px 18px;
-            border: 1px solid rgba(120, 219, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-bottom: none;
             border-radius: 6px 6px 0 0;
             background: transparent;
-            color: #64748b;
-            font-family: 'Orbitron', monospace;
+            color: #555555;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
@@ -582,8 +578,8 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .main-tab.active { background: rgba(120, 219, 255, 0.1); color: #78dbff; border-color: rgba(120, 219, 255, 0.4); }
-        .main-tab:hover { color: #e2e8f0; }
+        .main-tab.active { background: rgba(0, 112, 243, 0.1); color: #0070f3; border-color: rgba(0, 112, 243, 0.2); }
+        .main-tab:hover { color: #ededed; }
         .tab-content { display: none; flex: 1; overflow: auto; position: relative; }
         .tab-content.active { display: flex; flex-direction: column; }
 
@@ -592,9 +588,9 @@
             position: fixed;
             z-index: 1000;
             min-width: 180px;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 8px;
             padding: 4px 0;
             box-shadow: 0 8px 32px rgba(0,0,0,0.6);
@@ -603,8 +599,8 @@
         .context-menu.visible { display: block; }
         .ctx-item {
             padding: 7px 16px;
-            color: #e2e8f0;
-            font-family: 'Rajdhani', sans-serif;
+            color: #ededed;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 13px;
             font-weight: 500;
             cursor: pointer;
@@ -613,11 +609,11 @@
             gap: 8px;
             transition: background 0.15s;
         }
-        .ctx-item:hover { background: rgba(120, 219, 255, 0.15); }
+        .ctx-item:hover { background: rgba(0, 112, 243, 0.1); }
         .ctx-item.danger { color: #ef4444; }
         .ctx-item.danger:hover { background: rgba(239, 68, 68, 0.15); }
-        .ctx-separator { height: 1px; background: rgba(120, 219, 255, 0.15); margin: 4px 0; }
-        .ctx-label { padding: 4px 16px; font-family: 'Orbitron', monospace; font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .ctx-separator { height: 1px; background: rgba(0, 112, 243, 0.1); margin: 4px 0; }
+        .ctx-label { padding: 4px 16px; font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; font-size: 9px; color: #555555; text-transform: uppercase; letter-spacing: 1px; }
 
         /* ── Phase 2: Minimap ───────────────────────────────────── */
         .minimap {
@@ -628,7 +624,7 @@
             height: 150px;
             border: 1px solid rgba(0, 212, 255, 0.3);
             border-radius: 6px;
-            background: rgba(15, 15, 35, 0.7);
+            background: rgba(0, 0, 0, 0.7);
             overflow: hidden;
             cursor: pointer;
             z-index: 50;
@@ -655,17 +651,17 @@
         }
         .shortcuts-overlay.visible { display: flex; }
         .shortcuts-panel {
-            background: rgba(15, 15, 35, 0.95);
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 12px;
             padding: 24px 32px;
             max-width: 520px;
             width: 90%;
         }
         .shortcuts-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 16px;
-            color: #78dbff;
+            color: #0070f3;
             margin-bottom: 16px;
             text-align: center;
         }
@@ -677,28 +673,28 @@
         }
         .shortcut-key {
             font-family: 'JetBrains Mono', monospace;
-            background: rgba(120, 219, 255, 0.15);
+            background: rgba(0, 112, 243, 0.1);
             padding: 2px 8px;
             border-radius: 4px;
-            color: #78dbff;
+            color: #0070f3;
             font-size: 12px;
         }
-        .shortcut-desc { color: #94a3b8; }
+        .shortcut-desc { color: #888888; }
 
         /* ── Phase 2: Template Button & Dropdown ────────────────── */
         .template-btn {
             padding: 6px 14px;
             background: rgba(139, 92, 246, 0.2);
-            color: #a78bfa;
+            color: #3d9aff;
             border: 1px solid rgba(139, 92, 246, 0.35);
             border-radius: 6px;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 700;
             font-size: 13px;
             transition: all 0.2s;
         }
-        .template-btn:hover { background: rgba(139, 92, 246, 0.3); border-color: #a78bfa; }
+        .template-btn:hover { background: rgba(139, 92, 246, 0.3); border-color: #3d9aff; }
         .template-dropdown {
             position: absolute;
             bottom: 100%;
@@ -706,8 +702,8 @@
             min-width: 320px;
             max-height: 360px;
             overflow-y: auto;
-            background: rgba(15, 15, 35, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px) saturate(180%);
             border: 1px solid rgba(139, 92, 246, 0.3);
             border-radius: 8px;
             padding: 4px 0;
@@ -716,17 +712,17 @@
             z-index: 200;
         }
         .template-dropdown.visible { display: block; }
-        .tpl-group-label { padding: 6px 14px; font-family: 'Orbitron', monospace; font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .tpl-group-label { padding: 6px 14px; font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; font-size: 10px; color: #555555; text-transform: uppercase; letter-spacing: 1px; }
         .tpl-item {
             padding: 6px 14px;
-            color: #e2e8f0;
+            color: #ededed;
             cursor: pointer;
             font-size: 13px;
             transition: background 0.15s;
         }
         .tpl-item:hover { background: rgba(139, 92, 246, 0.15); }
         .tpl-item-name { font-weight: 600; }
-        .tpl-item-desc { color: #64748b; font-size: 11px; margin-top: 1px; }
+        .tpl-item-desc { color: #555555; font-size: 11px; margin-top: 1px; }
 
         /* ── Phase 2: Template Params ───────────────────────────── */
         .template-params {
@@ -737,18 +733,18 @@
         }
         .template-params.visible { display: flex; }
         .param-field { display: flex; flex-direction: column; gap: 2px; }
-        .param-label { font-size: 11px; color: #78dbff; font-weight: 600; font-family: 'Rajdhani', sans-serif; }
+        .param-label { font-size: 11px; color: #0070f3; font-weight: 600; font-family: 'Sora', ui-sans-serif, system-ui, sans-serif; }
         .param-input {
             padding: 5px 10px;
             border: 1px solid rgba(120, 219, 255, 0.25);
             border-radius: 6px;
             background: rgba(10, 10, 25, 0.8);
-            color: #e2e8f0;
+            color: #ededed;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
             width: 160px;
         }
-        .param-input:focus { outline: none; border-color: #78dbff; }
+        .param-input:focus { outline: none; border-color: #0070f3; }
 
         /* ── Phase 2: View as Graph button ──────────────────────── */
         .view-graph-btn {
@@ -758,7 +754,7 @@
             border: 1px solid rgba(34, 197, 94, 0.3);
             border-radius: 6px;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 700;
             font-size: 12px;
             transition: all 0.2s;
@@ -779,30 +775,30 @@
             margin-bottom: 24px;
         }
         .stat-card {
-            background: rgba(15, 15, 35, 0.6);
-            border: 1px solid rgba(120, 219, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 10px;
             padding: 16px;
             text-align: center;
         }
         .stat-card-value {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 28px;
-            color: #78dbff;
+            color: #0070f3;
             font-weight: 700;
         }
         .stat-card-label {
             font-size: 12px;
-            color: #64748b;
+            color: #555555;
             margin-top: 4px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         .stats-section { margin-bottom: 24px; }
         .stats-section-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
-            color: #78dbff;
+            color: #0070f3;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 12px;
@@ -813,10 +809,10 @@
             margin-bottom: 6px;
             font-size: 13px;
         }
-        .stats-bar-label { width: 140px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .stats-bar-label { width: 140px; color: #888888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .stats-bar-track { flex: 1; height: 18px; background: rgba(120, 219, 255, 0.08); border-radius: 4px; overflow: hidden; position: relative; margin: 0 8px; }
         .stats-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-        .stats-bar-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #78dbff; min-width: 50px; text-align: right; }
+        .stats-bar-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #0070f3; min-width: 50px; text-align: right; }
 
         /* ── Phase 3: Vector Tab ────────────────────────────────── */
         .vector-toolbar {
@@ -824,31 +820,31 @@
             align-items: center;
             gap: 12px;
             padding: 8px 16px;
-            background: rgba(15, 15, 35, 0.6);
-            border-bottom: 1px solid rgba(120, 219, 255, 0.1);
+            background: rgba(0, 0, 0, 0.6);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
         }
         .vector-toolbar select {
             padding: 6px 12px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 6px;
-            background: rgba(15, 15, 35, 0.8);
-            color: #e2e8f0;
-            font-family: 'Rajdhani', sans-serif;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ededed;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 13px;
         }
         .vector-toolbar button {
             padding: 6px 14px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 6px;
-            background: rgba(120, 219, 255, 0.1);
-            color: #78dbff;
-            font-family: 'Rajdhani', sans-serif;
+            background: rgba(0, 112, 243, 0.1);
+            color: #0070f3;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .vector-toolbar button:hover { background: rgba(120, 219, 255, 0.2); }
+        .vector-toolbar button:hover { background: rgba(255, 255, 255, 0.06); }
         .vector-main {
             display: flex;
             flex: 1;
@@ -866,10 +862,10 @@
         }
         .vector-scatter-area svg .axis line,
         .vector-scatter-area svg .axis path {
-            stroke: rgba(120, 219, 255, 0.2);
+            stroke: rgba(255, 255, 255, 0.06);
         }
         .vector-scatter-area svg .axis text {
-            fill: #64748b;
+            fill: #555555;
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
         }
@@ -892,26 +888,26 @@
             stroke-dasharray: 4,3;
         }
         .similarity-label {
-            fill: #ff77c6;
+            fill: #3d9aff;
             font-family: 'JetBrains Mono', monospace;
             font-size: 9px;
         }
         .vector-search-panel {
             width: 320px;
             min-width: 260px;
-            border-left: 1px solid rgba(120, 219, 255, 0.1);
+            border-left: 1px solid rgba(0, 112, 243, 0.1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
         .vector-search-header {
             padding: 12px 16px;
-            border-bottom: 1px solid rgba(120, 219, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 112, 243, 0.1);
         }
         .vector-search-header .section-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 11px;
-            color: #78dbff;
+            color: #0070f3;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
@@ -919,23 +915,23 @@
         .vector-search-input {
             width: 100%;
             padding: 8px 12px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 6px;
-            background: rgba(15, 15, 35, 0.8);
-            color: #e2e8f0;
-            font-family: 'Rajdhani', sans-serif;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ededed;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 14px;
             margin-bottom: 8px;
         }
-        .vector-search-input:focus { outline: none; border-color: rgba(120, 219, 255, 0.6); }
+        .vector-search-input:focus { outline: none; border-color: rgba(0, 112, 243, 0.3); }
         .vector-search-btn {
             width: 100%;
             padding: 8px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 6px;
-            background: linear-gradient(135deg, rgba(120, 219, 255, 0.15), rgba(139, 92, 246, 0.15));
-            color: #78dbff;
-            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, rgba(0, 112, 243, 0.1), rgba(139, 92, 246, 0.15));
+            color: #0070f3;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
@@ -949,18 +945,18 @@
         }
         .vector-result-item {
             padding: 8px 12px;
-            border: 1px solid rgba(120, 219, 255, 0.1);
+            border: 1px solid rgba(0, 112, 243, 0.1);
             border-radius: 6px;
             margin-bottom: 6px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .vector-result-item:hover { background: rgba(120, 219, 255, 0.08); border-color: rgba(120, 219, 255, 0.3); }
-        .vector-result-item.selected { background: rgba(120, 219, 255, 0.12); border-color: rgba(120, 219, 255, 0.5); }
+        .vector-result-item:hover { background: rgba(120, 219, 255, 0.08); border-color: rgba(0, 112, 243, 0.15); }
+        .vector-result-item.selected { background: rgba(120, 219, 255, 0.12); border-color: rgba(0, 112, 243, 0.3); }
         .vector-result-rid {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            color: #78dbff;
+            color: #0070f3;
         }
         .vector-result-score {
             font-family: 'JetBrains Mono', monospace;
@@ -970,7 +966,7 @@
         }
         .vector-result-preview {
             font-size: 12px;
-            color: #94a3b8;
+            color: #888888;
             margin-top: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -978,37 +974,37 @@
         }
         .vector-coverage {
             padding: 12px 16px;
-            border-top: 1px solid rgba(120, 219, 255, 0.1);
+            border-top: 1px solid rgba(0, 112, 243, 0.1);
             font-size: 12px;
-            color: #94a3b8;
+            color: #888888;
         }
         .vector-coverage-bar {
             height: 6px;
-            background: rgba(120, 219, 255, 0.1);
+            background: rgba(0, 112, 243, 0.1);
             border-radius: 3px;
             overflow: hidden;
             margin: 6px 0;
         }
         .vector-coverage-fill {
             height: 100%;
-            background: linear-gradient(90deg, #22c55e, #78dbff);
+            background: linear-gradient(90deg, #22c55e, #0070f3);
             border-radius: 3px;
             transition: width 0.5s ease;
         }
         .vector-coverage-detail {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
-            color: #64748b;
+            color: #555555;
             margin-top: 4px;
         }
         .vector-tooltip {
             position: absolute;
             padding: 6px 10px;
-            background: rgba(15, 15, 35, 0.95);
-            border: 1px solid rgba(120, 219, 255, 0.4);
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(0, 112, 243, 0.2);
             border-radius: 6px;
             font-size: 12px;
-            color: #e2e8f0;
+            color: #ededed;
             pointer-events: none;
             z-index: 200;
             max-width: 250px;
@@ -1020,7 +1016,7 @@
         /* ── Phase 3: Embedding Detail ─────────────────────────── */
         .embedding-section {
             padding: 12px 20px;
-            border-top: 1px solid rgba(120, 219, 255, 0.1);
+            border-top: 1px solid rgba(0, 112, 243, 0.1);
         }
         .embedding-badge {
             display: inline-block;
@@ -1036,7 +1032,7 @@
         .embedding-magnitude {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            color: #94a3b8;
+            color: #888888;
         }
         .embedding-sparkline {
             display: flex;
@@ -1048,16 +1044,16 @@
         .sparkline-bar {
             flex: 1;
             min-width: 1px;
-            background: rgba(120, 219, 255, 0.5);
+            background: rgba(0, 112, 243, 0.3);
             border-radius: 1px;
         }
         .find-similar-btn {
             padding: 6px 14px;
-            border: 1px solid rgba(255, 119, 198, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 6px;
             background: rgba(255, 119, 198, 0.1);
-            color: #ff77c6;
-            font-family: 'Rajdhani', sans-serif;
+            color: #3d9aff;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
@@ -1068,7 +1064,7 @@
 
         /* ── Phase 3: Broker Panel ──────────────────────────────── */
         .broker-section {
-            border-top: 1px solid rgba(120, 219, 255, 0.1);
+            border-top: 1px solid rgba(0, 112, 243, 0.1);
         }
         .broker-header {
             display: flex;
@@ -1078,16 +1074,16 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .broker-header:hover { background: rgba(120, 219, 255, 0.05); }
+        .broker-header:hover { background: rgba(0, 112, 243, 0.05); }
         .broker-header-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 11px;
-            color: #78dbff;
+            color: #0070f3;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         .broker-toggle {
-            color: #64748b;
+            color: #555555;
             font-size: 12px;
             transition: transform 0.2s;
         }
@@ -1126,32 +1122,32 @@
             font-size: 12px;
         }
         .broker-agent-row:hover { background: rgba(120, 219, 255, 0.08); }
-        .broker-agent-row.active-source { background: rgba(120, 219, 255, 0.12); border: 1px solid rgba(120, 219, 255, 0.3); }
+        .broker-agent-row.active-source { background: rgba(120, 219, 255, 0.12); border: 1px solid rgba(0, 112, 243, 0.15); }
         .broker-agent-icon { margin-right: 8px; font-size: 14px; }
-        .broker-agent-name { flex: 1; color: #e2e8f0; font-weight: 600; }
-        .broker-agent-version { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #64748b; margin-left: 4px; }
+        .broker-agent-name { flex: 1; color: #ededed; font-weight: 600; }
+        .broker-agent-version { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #555555; margin-left: 4px; }
         .broker-agent-tools {
             padding: 4px 8px 8px 24px;
             font-size: 11px;
-            color: #64748b;
+            color: #555555;
             display: none;
         }
         .broker-agent-tools.expanded { display: block; }
         .broker-use-btn {
             padding: 3px 10px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 4px;
             background: transparent;
-            color: #78dbff;
+            color: #0070f3;
             font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .broker-use-btn:hover { background: rgba(120, 219, 255, 0.15); }
+        .broker-use-btn:hover { background: rgba(0, 112, 243, 0.1); }
         .broker-divider {
             border: none;
-            border-top: 1px solid rgba(120, 219, 255, 0.1);
+            border-top: 1px solid rgba(0, 112, 243, 0.1);
             margin: 10px 0;
         }
         .broker-direct-form {
@@ -1161,41 +1157,41 @@
         }
         .broker-direct-form label {
             font-size: 10px;
-            color: #64748b;
+            color: #555555;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         .broker-direct-form input {
             padding: 5px 8px;
-            border: 1px solid rgba(120, 219, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 4px;
-            background: rgba(15, 15, 35, 0.8);
-            color: #e2e8f0;
-            font-family: 'Rajdhani', sans-serif;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ededed;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 12px;
         }
-        .broker-direct-form input:focus { outline: none; border-color: rgba(120, 219, 255, 0.5); }
+        .broker-direct-form input:focus { outline: none; border-color: rgba(0, 112, 243, 0.3); }
         .broker-connect-btn {
             padding: 6px;
-            border: 1px solid rgba(120, 219, 255, 0.3);
+            border: 1px solid rgba(0, 112, 243, 0.15);
             border-radius: 4px;
-            background: rgba(120, 219, 255, 0.1);
-            color: #78dbff;
-            font-family: 'Orbitron', monospace;
+            background: rgba(0, 112, 243, 0.1);
+            color: #0070f3;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             margin-top: 4px;
         }
-        .broker-connect-btn:hover { background: rgba(120, 219, 255, 0.2); }
+        .broker-connect-btn:hover { background: rgba(255, 255, 255, 0.06); }
         .broker-current-source {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
-            color: #64748b;
+            color: #555555;
             margin-top: 8px;
             padding: 4px 8px;
-            background: rgba(15, 15, 35, 0.5);
+            background: rgba(10, 10, 10, 0.8);
             border-radius: 4px;
         }
 
@@ -1205,9 +1201,9 @@
             border: 1px solid rgba(0, 212, 255, 0.3);
             border-radius: 20px;
             background: rgba(0, 212, 255, 0.08);
-            color: #78dbff;
+            color: #0070f3;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             font-size: 13px;
             transition: all 0.3s;
@@ -1272,7 +1268,7 @@
             background: rgba(10, 10, 30, 0.97);
             border: 1px solid rgba(0, 212, 255, 0.4);
             border-radius: 16px;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(12px) saturate(180%);
             box-shadow: 0 0 40px rgba(0, 212, 255, 0.15);
             z-index: 9002;
             display: none;
@@ -1287,7 +1283,7 @@
         }
         .tutorial-progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #00d4ff, #78dbff);
+            background: linear-gradient(90deg, #00d4ff, #0070f3);
             transition: width 0.4s ease;
         }
         .tutorial-card-body {
@@ -1300,23 +1296,23 @@
         .tutorial-card-body::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.3); border-radius: 3px; }
         .tutorial-card-body::-webkit-scrollbar-thumb:hover { background: rgba(0, 212, 255, 0.5); }
         .tutorial-chapter-label {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 11px;
-            color: #64748b;
+            color: #555555;
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 4px;
         }
         .tutorial-chapter-title {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 20px;
             color: #00d4ff;
             margin-bottom: 16px;
         }
         .tutorial-instruction {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 15px;
-            color: #cbd5e1;
+            color: #888888;
             line-height: 1.6;
             margin-bottom: 16px;
         }
@@ -1349,10 +1345,10 @@
             background: rgba(0, 212, 255, 0.15);
             border: 1px solid rgba(0, 212, 255, 0.3);
             border-radius: 4px;
-            color: #78dbff;
+            color: #0070f3;
             font-size: 10px;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
         }
         .tutorial-code-copy:hover { background: rgba(0, 212, 255, 0.25); }
 
@@ -1387,16 +1383,16 @@
             color: #22c55e;
         }
         .tutorial-task-label {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 11px;
-            color: #94a3b8;
+            color: #888888;
             letter-spacing: 1px;
             text-transform: uppercase;
         }
         .tutorial-task-text {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 14px;
-            color: #e2e8f0;
+            color: #ededed;
         }
 
         .tutorial-buttons {
@@ -1409,7 +1405,7 @@
             padding: 8px 20px;
             border-radius: 8px;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.2s;
@@ -1417,20 +1413,20 @@
         .tutorial-btn-back {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #94a3b8;
+            color: #888888;
         }
-        .tutorial-btn-back:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.4); color: #e2e8f0; }
+        .tutorial-btn-back:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.4); color: #ededed; }
         .tutorial-btn-back:disabled { opacity: 0.3; cursor: not-allowed; }
         .tutorial-btn-skip {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #64748b;
+            color: #555555;
         }
-        .tutorial-btn-skip:hover { color: #94a3b8; border-color: rgba(255, 255, 255, 0.3); }
+        .tutorial-btn-skip:hover { color: #888888; border-color: rgba(255, 255, 255, 0.3); }
         .tutorial-btn-next {
             background: rgba(0, 212, 255, 0.15);
             border: 1px solid rgba(0, 212, 255, 0.3);
-            color: #78dbff;
+            color: #0070f3;
         }
         .tutorial-btn-next:hover:not(:disabled) {
             background: rgba(0, 212, 255, 0.25);
@@ -1439,7 +1435,7 @@
         }
         .tutorial-btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
         .tutorial-btn-next.ready {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(120, 219, 255, 0.3));
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 112, 243, 0.15));
             border-color: #00d4ff;
             box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
             color: #fff;
@@ -1450,15 +1446,15 @@
             padding: 20px 0;
         }
         .tutorial-completion h2 {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 22px;
             color: #00d4ff;
             margin-bottom: 16px;
         }
         .tutorial-completion p {
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-size: 15px;
-            color: #cbd5e1;
+            color: #888888;
             line-height: 1.6;
             margin-bottom: 20px;
         }
@@ -1472,7 +1468,7 @@
             padding: 10px 24px;
             border-radius: 8px;
             cursor: pointer;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.2s;
@@ -1486,13 +1482,13 @@
         .tutorial-restart-btn {
             background: rgba(0, 212, 255, 0.15);
             border: 1px solid rgba(0, 212, 255, 0.3);
-            color: #78dbff;
+            color: #0070f3;
         }
         .tutorial-restart-btn:hover { background: rgba(0, 212, 255, 0.25); border-color: #00d4ff; }
         .tutorial-close-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #e2e8f0;
+            color: #ededed;
         }
         .tutorial-close-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.4); }
         .tutorial-btn-exit {
@@ -1503,7 +1499,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.82rem;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             margin-left: auto;
         }
         .tutorial-btn-exit:hover { background: rgba(255, 80, 80, 0.25); border-color: #ff6666; color: #ffaaaa; }
@@ -1515,10 +1511,10 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.82rem;
-            font-family: 'Rajdhani', sans-serif;
+            font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
             margin-right: auto;
         }
-        .tutorial-btn-restart:hover { background: rgba(0, 212, 255, 0.2); border-color: #00d4ff; color: #78dbff; }
+        .tutorial-btn-restart:hover { background: rgba(0, 212, 255, 0.2); border-color: #00d4ff; color: #0070f3; }
         .tutorial-card.position-left {
             left: 24px; right: auto;
         }
@@ -1535,7 +1531,7 @@
 <body>
     <!-- ── Header ───────────────────────────────────────────────── -->
     <div class="header">
-        <div class="logo">KĀDI Graph Explorer</div>
+        <div class="logo">AGENTS Graph Explorer</div>
         <div class="header-center">
             <div id="connectionStatus" class="connection-status status-disconnected">⬤ Disconnected</div>
             <select id="dbSelect" class="db-select"><option value="">Loading…</option></select>
@@ -1648,16 +1644,16 @@
             <!-- Vector Tab -->
             <div id="tabVector" class="tab-content">
                 <div class="vector-toolbar">
-                    <label style="font-size:12px;color:#94a3b8;">Vertex Type:</label>
+                    <label style="font-size:12px;color:#888888;">Vertex Type:</label>
                     <select id="vectorTypeSelect" onchange="loadVectorProjection()">
                         <option value="">— select type —</option>
                     </select>
                     <button onclick="refreshVectorProjection()" title="Force recompute projection">↻ Refresh</button>
-                    <span id="vectorStatus" style="font-size:11px;color:#64748b;margin-left:auto;"></span>
+                    <span id="vectorStatus" style="font-size:11px;color:#555555;margin-left:auto;"></span>
                 </div>
-                <div class="vector-filter-bar" style="display:flex;align-items:center;gap:8px;padding:4px 12px;background:rgba(15,23,42,0.5);border-bottom:1px solid #1e293b;font-size:12px;">
-                    <label style="color:#94a3b8;white-space:nowrap;">Filter:</label>
-                    <select id="vectorFilterPreset" onchange="applyVectorFilterPreset()" style="background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;padding:2px 6px;font-size:11px;">
+                <div class="vector-filter-bar" style="display:flex;align-items:center;gap:8px;padding:4px 12px;background:rgba(10,10,10,0.8);border-bottom:1px solid #0a0a0a;font-size:12px;">
+                    <label style="color:#888888;white-space:nowrap;">Filter:</label>
+                    <select id="vectorFilterPreset" onchange="applyVectorFilterPreset()" style="background:#000000;color:#ededed;border:1px solid #1a1a1a;border-radius:4px;padding:2px 6px;font-size:11px;">
                         <option value="">No filter (all embeddings)</option>
                         <option value="collection">By collection</option>
                         <option value="importance">By importance ≥</option>
@@ -1665,11 +1661,11 @@
                         <option value="custom">Custom WHERE…</option>
                     </select>
                     <input id="vectorFilterInput" type="text" placeholder="e.g. collection = 'docs' AND importance > 5" 
-                        style="flex:1;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;padding:4px 8px;font-size:11px;font-family:'Fira Code',monospace;display:none;"
+                        style="flex:1;background:#000000;color:#ededed;border:1px solid #1a1a1a;border-radius:4px;padding:4px 8px;font-size:11px;font-family:'Fira Code',monospace;display:none;"
                         onkeydown="if(event.key==='Enter')applyVectorFilter()">
-                    <button id="vectorFilterApplyBtn" onclick="applyVectorFilter()" style="display:none;background:#334155;color:#e2e8f0;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;">Apply</button>
-                    <button id="vectorFilterClearBtn" onclick="clearVectorFilter()" style="display:none;background:transparent;color:#64748b;border:1px solid #334155;border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;">✕ Clear</button>
-                    <span id="vectorFilterActive" style="display:none;color:#818cf8;font-size:11px;white-space:nowrap;"></span>
+                    <button id="vectorFilterApplyBtn" onclick="applyVectorFilter()" style="display:none;background:#1a1a1a;color:#ededed;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;">Apply</button>
+                    <button id="vectorFilterClearBtn" onclick="clearVectorFilter()" style="display:none;background:transparent;color:#555555;border:1px solid #1a1a1a;border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;">✕ Clear</button>
+                    <span id="vectorFilterActive" style="display:none;color:#3d9aff;font-size:11px;white-space:nowrap;"></span>
                 </div>
                 <div class="vector-main">
                     <div class="vector-scatter-area">
@@ -1679,7 +1675,7 @@
                     <div class="vector-search-panel">
                         <div class="vector-search-header">
                             <div class="section-title">Similarity Search</div>
-                            <div style="font-size:11px;color:#475569;margin-bottom:6px;">Search by meaning — finds vertices with similar embeddings</div>
+                            <div style="font-size:11px;color:#555555;margin-bottom:6px;">Search by meaning — finds vertices with similar embeddings</div>
                             <input id="vectorSearchInput" class="vector-search-input" type="text" placeholder="Enter text to find similar…" onkeydown="if(event.key==='Enter')vectorSimilaritySearch()">
                             <button class="vector-search-btn" onclick="vectorSimilaritySearch()">🔍 Find Similar</button>
                         </div>
@@ -1791,13 +1787,13 @@
     let knownEdgeTypes = [];
 
     const typeColors = {
-        Memory: '#818cf8',
+        Memory: '#3d9aff',
         DocNode: '#34d399',
-        Topic: '#fbbf24',
+        Topic: '#eab308',
         Entity: '#fb7185',
         Conversation: '#38bdf8',
     };
-    const defaultColor = '#94a3b8';
+    const defaultColor = '#888888';
     const edgeColors = {
         HasTopic: '#c4b5fd',
         Mentions: '#86efac',
@@ -1807,7 +1803,7 @@
         References: '#a5b4fc',
         REMEMBERED_DURING: '#67e8f9',
     };
-    const defaultEdgeColor = '#64748b';
+    const defaultEdgeColor = '#555555';
 
     function getTypeColor(type) { return typeColors[type] || defaultColor; }
     function getEdgeColor(type) { return edgeColors[type] || defaultEdgeColor; }
@@ -2044,12 +2040,12 @@
                     </div>
                     <div id="vprops${i}" class="schema-type-props">`;
                     if (props.length === 0) {
-                        html += '<div class="schema-prop" style="color:#475569;font-style:italic;">No properties discovered (empty type)</div>';
+                        html += '<div class="schema-prop" style="color:#555555;font-style:italic;">No properties discovered (empty type)</div>';
                     }
                     props.forEach(p => {
                         const pName = p.name || p;
                         const isEmb = pName === 'embedding';
-                        const embIcon = isEmb ? ' <span style="color:#818cf8;font-size:10px;">vector</span>' : '';
+                        const embIcon = isEmb ? ' <span style="color:#3d9aff;font-size:10px;">vector</span>' : '';
                         html += `<div class="schema-prop"><span class="schema-prop-name">${pName}</span><span class="schema-prop-type">${p.type || ''}${embIcon}</span></div>`;
                     });
                     html += '</div>';
@@ -2069,7 +2065,7 @@
                     </div>
                     <div id="eprops${i}" class="schema-type-props">`;
                     if (props.length === 0) {
-                        html += '<div class="schema-prop" style="color:#475569;font-style:italic;">No properties discovered (empty type)</div>';
+                        html += '<div class="schema-prop" style="color:#555555;font-style:italic;">No properties discovered (empty type)</div>';
                     }
                     props.forEach(p => {
                         const pName = p.name || p;
@@ -2079,7 +2075,7 @@
                 });
             }
 
-            if (!html) html = '<span style="color:#64748b">No types found</span>';
+            if (!html) html = '<span style="color:#555555">No types found</span>';
             treeEl.innerHTML = html;
             buildLegend(vertexTypes);
             populateTypeSelector();
@@ -2373,7 +2369,7 @@
             .attr('orient', 'auto')
             .append('path')
             .attr('d', 'M0,-5L10,0L0,5')
-            .attr('fill', '#64748b');
+            .attr('fill', '#555555');
 
         svgGroup = svg.append('g');
 
@@ -2933,7 +2929,7 @@
         // Use knownVertexTypes (populated during schema load) — search across all vertex types
         const searchTypes = knownVertexTypes.length > 0 ? knownVertexTypes : ['Memory', 'Topic', 'Entity', 'DocNode'];
 
-        resultsEl.innerHTML = '<div class="search-result-item" style="color:#64748b">Searching…</div>';
+        resultsEl.innerHTML = '<div class="search-result-item" style="color:#555555">Searching…</div>';
 
         try {
             // Search across all vertex types and merge results
@@ -2964,7 +2960,7 @@
             }).slice(0, 15);
 
             if (allResults.length === 0) {
-                resultsEl.innerHTML = '<div class="search-result-item" style="color:#64748b">No results</div>';
+                resultsEl.innerHTML = '<div class="search-result-item" style="color:#555555">No results</div>';
                 return;
             }
 
@@ -3649,7 +3645,7 @@
     function renderTemplateDropdown() {
         const dd = document.getElementById('templateDropdown');
         if (!allTemplates.length) {
-            dd.innerHTML = '<div class="tpl-item" style="color:#64748b">No templates loaded</div>';
+            dd.innerHTML = '<div class="tpl-item" style="color:#555555">No templates loaded</div>';
             return;
         }
 
@@ -3926,7 +3922,7 @@
         const defs = svg.append('defs');
         defs.append('marker').attr('id', 'er-arrow').attr('viewBox', '0 -5 10 10')
             .attr('refX', 10).attr('refY', 0).attr('markerWidth', 8).attr('markerHeight', 8)
-            .attr('orient', 'auto').append('path').attr('d', 'M0,-5L10,0L0,5').attr('fill', '#64748b');
+            .attr('orient', 'auto').append('path').attr('d', 'M0,-5L10,0L0,5').attr('fill', '#555555');
 
         // Force simulation for ER diagram
         erSimulation = d3.forceSimulation(nodes)
@@ -3945,7 +3941,7 @@
         link.append('text')
             .attr('fill', d => getEdgeColor(d.type))
             .attr('font-size', 10)
-            .attr('font-family', 'Rajdhani, sans-serif')
+            .attr('font-family', 'Sora, sans-serif')
             .attr('font-weight', 600)
             .attr('text-anchor', 'middle')
             .style('cursor', 'pointer')
@@ -3991,7 +3987,7 @@
             .attr('x', boxWidth / 2).attr('y', 18)
             .attr('text-anchor', 'middle')
             .attr('fill', d => getTypeColor(d.id))
-            .attr('font-family', 'Orbitron, monospace')
+            .attr('font-family', 'Sora, sans-serif')
             .attr('font-size', 11)
             .attr('font-weight', 700)
             .text(d => d.id);
@@ -4001,7 +3997,7 @@
             d.properties.forEach((p, i) => {
                 d3.select(this).append('text')
                     .attr('x', 10).attr('y', 34 + i * 14)
-                    .attr('fill', '#94a3b8')
+                    .attr('fill', '#888888')
                     .attr('font-family', 'JetBrains Mono, monospace')
                     .attr('font-size', 9)
                     .text(p);
@@ -4107,7 +4103,7 @@
                     const pct = ((r.frequency || 0) / maxFreq * 100).toFixed(1);
                     html += `<div class="stats-bar">
                         <span class="stats-bar-label">${escapeHtml(r.name || '?')}</span>
-                        <div class="stats-bar-track"><div class="stats-bar-fill" style="width:${pct}%;background:#fbbf24;"></div></div>
+                        <div class="stats-bar-track"><div class="stats-bar-fill" style="width:${pct}%;background:#eab308;"></div></div>
                         <span class="stats-bar-count">${r.frequency || 0}</span>
                     </div>`;
                 });
@@ -4130,7 +4126,7 @@
                 html += '</div>';
             }
 
-            container.innerHTML = html || '<span style="color:#64748b">No statistics available</span>';
+            container.innerHTML = html || '<span style="color:#555555">No statistics available</span>';
         } catch(e) {
             container.innerHTML = `<span style="color:#ef4444">Error loading stats: ${e.message}</span>`;
             statsLoaded = false;
@@ -4295,10 +4291,10 @@
         vectorSearchResults = [];
 
         if (!data.points || data.points.length === 0) {
-            container.innerHTML = `<div style="padding:40px;text-align:center;color:#64748b;">
+            container.innerHTML = `<div style="padding:40px;text-align:center;color:#555555;">
                 <div style="font-size:14px;margin-bottom:8px;">No embeddings found for this vertex type</div>
-                <div style="font-size:12px;color:#475569;">Vertices need an <code style="background:rgba(120,219,255,0.1);padding:2px 6px;border-radius:3px;">embedding</code> property to appear here.</div>
-                <div style="font-size:12px;color:#475569;margin-top:4px;">Store data through the memory/docs pipeline to generate embeddings,<br>or use the Similarity Search panel to search by text (no projection needed).</div>
+                <div style="font-size:12px;color:#555555;">Vertices need an <code style="background:rgba(120,219,255,0.1);padding:2px 6px;border-radius:3px;">embedding</code> property to appear here.</div>
+                <div style="font-size:12px;color:#555555;margin-top:4px;">Store data through the memory/docs pipeline to generate embeddings,<br>or use the Similarity Search panel to search by text (no projection needed).</div>
             </div>`;
             return;
         }
@@ -4347,11 +4343,11 @@
 
         // Axis labels
         g.append('text').attr('x', innerW / 2).attr('y', innerH + 32)
-            .attr('text-anchor', 'middle').attr('fill', '#64748b').attr('font-size', '11px')
+            .attr('text-anchor', 'middle').attr('fill', '#555555').attr('font-size', '11px')
             .text('PC1');
         g.append('text').attr('x', -innerH / 2).attr('y', -35)
             .attr('transform', 'rotate(-90)').attr('text-anchor', 'middle')
-            .attr('fill', '#64748b').attr('font-size', '11px')
+            .attr('fill', '#555555').attr('font-size', '11px')
             .text('PC2');
 
         // Similarity lines group (below points)
@@ -4373,7 +4369,7 @@
             .attr('stroke-width', 1)
             .on('mouseover', function(event, d) {
                 tooltip.style('display', 'block')
-                    .html(`<strong>${escapeHtml(d.label)}</strong><br><span style="color:#78dbff">${d.rid}</span>`)
+                    .html(`<strong>${escapeHtml(d.label)}</strong><br><span style="color:#0070f3">${d.rid}</span>`)
                     .style('left', (event.offsetX + 12) + 'px')
                     .style('top', (event.offsetY - 30) + 'px');
                 d3.select(this).attr('r', 8).attr('opacity', 1);
@@ -4413,7 +4409,7 @@
             </div>
             <div class="detail-section">
                 <div class="detail-section-title">Label</div>
-                <div style="padding:8px 20px;color:#e2e8f0;font-size:13px;">${escapeHtml(point.label)}</div>
+                <div style="padding:8px 20px;color:#ededed;font-size:13px;">${escapeHtml(point.label)}</div>
             </div>`;
         }
     }
@@ -4421,7 +4417,7 @@
     function updateVectorCoverage(data) {
         const el = document.getElementById('vectorCoverage');
         if (!data || data.count === 0) {
-            el.innerHTML = '<div style="color:#64748b;">No embeddings found</div>';
+            el.innerHTML = '<div style="color:#555555;">No embeddings found</div>';
             return;
         }
         const pct = data.sampledFrom > 0 ? Math.round((data.count / data.sampledFrom) * 100) : 0;
@@ -4443,7 +4439,7 @@
         const vertexType = select.value || 'DocNode';
 
         const resultsEl = document.getElementById('vectorResults');
-        resultsEl.innerHTML = '<div style="padding:12px;color:#64748b;">Searching…</div>';
+        resultsEl.innerHTML = '<div style="padding:12px;color:#555555;">Searching…</div>';
 
         try {
             const data = await apiPost('/api/similar', {
@@ -4460,7 +4456,7 @@
             } else {
                 let errMsg = data.error || 'Search failed';
                 if (errMsg.includes('API key required') || errMsg.includes('REQUIRE_USER_KEY')) {
-                    errMsg += '<br><small style="color:#94a3b8;">Set MEMORY_API_KEY in your vault or environment</small>';
+                    errMsg += '<br><small style="color:#888888;">Set MEMORY_API_KEY in your vault or environment</small>';
                 }
                 resultsEl.innerHTML = `<div style="padding:12px;color:#ef4444;">${errMsg}</div>`;
             }
@@ -4472,15 +4468,15 @@
     function renderVectorResults(results) {
         const el = document.getElementById('vectorResults');
         if (!results || results.length === 0) {
-            el.innerHTML = '<div style="padding:12px;color:#64748b;">No similar results found</div>';
+            el.innerHTML = '<div style="padding:12px;color:#555555;">No similar results found</div>';
             return;
         }
 
-        el.innerHTML = `<div style="padding:4px 8px 8px;font-size:11px;color:#64748b;">${results.length} result${results.length !== 1 ? 's' : ''} — click to view details</div>` +
+        el.innerHTML = `<div style="padding:4px 8px 8px;font-size:11px;color:#555555;">${results.length} result${results.length !== 1 ? 's' : ''} — click to view details</div>` +
             results.map((r, i) => {
                 const preview = r.properties?.content || r.properties?.name || r.properties?.title || '';
                 const previewText = typeof preview === 'string' ? (preview.length > 120 ? preview.slice(0, 120) + '…' : preview) : '';
-                const scoreColor = r.score > 0.8 ? '#22c55e' : r.score > 0.5 ? '#eab308' : '#94a3b8';
+                const scoreColor = r.score > 0.8 ? '#22c55e' : r.score > 0.5 ? '#eab308' : '#888888';
                 return `<div class="vector-result-item" onclick="selectVectorResult(${i})">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <span class="vector-result-rid">${r.rid}</span>
@@ -4674,7 +4670,7 @@
                 badge.textContent = '⬤ Broker Connected';
 
                 if (brokerAgents.length === 0) {
-                    listEl.innerHTML = '<div style="padding:8px;font-size:11px;color:#64748b;">' +
+                    listEl.innerHTML = '<div style="padding:8px;font-size:11px;color:#555555;">' +
                         (data.note || 'No ArcadeDB agents found') + '</div>';
                 } else {
                     renderBrokerAgents();
