@@ -27,14 +27,14 @@ export function registerRecallTool(
       name: 'graph-recall',
       description:
         'Search the graph using N-signal hybrid recall. Supports semantic, keyword, ' +
-        'graph traversal, and structural signals. Requires vertexType — no default.',
+        'graph traversal, structural, and rerank (cross-encoder) signals. Requires vertexType — no default.',
       input: z.object({
         query: z.string().describe('Search query text'),
         vertexType: z.string().describe('REQUIRED: vertex type to search'),
         mode: z.enum(['semantic', 'keyword', 'graph', 'hybrid']).optional()
           .describe('Search mode (default: hybrid)'),
         signals: z.array(z.string()).optional()
-          .describe('Signals for hybrid mode (default: semantic, keyword, graph)'),
+          .describe('Signals for hybrid mode (default: semantic, keyword, graph). Available: semantic, keyword, graph, structural, rerank, temporal-decay'),
         structuralEdges: z.array(z.string()).optional()
           .describe('Edge types for structural signal'),
         structuralDepth: z.number().optional()

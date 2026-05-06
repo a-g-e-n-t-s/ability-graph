@@ -77,11 +77,15 @@ import { semanticSignal } from './semantic.js';
 import { keywordSignal } from './keyword.js';
 import { graphSignal } from './graph.js';
 import { structuralSignal } from './structural.js';
+import { crossEncoderSignal } from './cross-encoder.js';
+import { temporalDecaySignal } from './temporal-decay.js';
 
 registerSignal(semanticSignal);
 registerSignal(keywordSignal);
 registerSignal(graphSignal);
 registerSignal(structuralSignal);
+registerSignal(crossEncoderSignal);
+registerSignal(temporalDecaySignal);
 
 // ---------------------------------------------------------------------------
 // Hybrid recall orchestrator
