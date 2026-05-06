@@ -152,6 +152,19 @@ if (isMainModule) {
   } else {
     // Broker mode — already connected at init, just stay alive
     console.log('[graph-ability] Serving via broker.');
+
+    // Start Graph Explorer HTTP server
+    const { loadExplorerConfig } = await import('./explorer/config.js');
+    const { startExplorerServer } = await import('./explorer/server.js');
+    const explorerConfig = loadExplorerConfig();
+    if (explorerConfig.enabled) {
+      const explorerAbilities = {
+        invoke: <T = unknown>(tool: string, params: Record<string, unknown>) =>
+          client.invokeRemote<T>(tool, params),
+      };
+      startExplorerServer(explorerConfig, explorerAbilities, config, client);
+    }
+
     await new Promise(() => {}); // keep process alive
   }
 }
